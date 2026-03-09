@@ -1,6 +1,8 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
+import IngredientInput from "../components/IngredientInput";
+import CommunityFeed from "../components/CommunityFeed";
 
 const recipes = [
   { title: "Special Salad Chicken", time: "20 mins" },
@@ -18,25 +20,23 @@ function Home() {
         <Navbar />
 
         <h1 className="text-3xl font-semibold mt-8 mb-4">
-          Learn, Cook, & Eat your food
+          Learn, Cook & Eat Healthy
         </h1>
 
-        <div className="flex gap-3 mb-8">
-          {["Pizza", "Dessert", "Noodle", "Salad"].map((item) => (
-            <button
-              key={item}
-              className="px-4 py-2 rounded-full border text-sm hover:bg-black hover:text-white transition"
-            >
-              {item}
-            </button>
-          ))}
-        </div>
+        {/* Ingredient Input */}
+        <IngredientInput />
 
-        <div className="grid grid-cols-4 gap-6">
+        {/* Recipe Section */}
+        <h2 className="text-xl font-semibold mb-4">Recommended Recipes</h2>
+
+        <div className="grid grid-cols-4 gap-6 mb-10">
           {recipes.map((recipe, i) => (
             <RecipeCard key={i} recipe={recipe} />
           ))}
         </div>
+
+        {/* Community Section */}
+        <CommunityFeed />
       </div>
     </div>
   );

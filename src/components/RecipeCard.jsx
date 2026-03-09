@@ -1,7 +1,7 @@
 function RecipeCard({ recipe }) {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition">
-      <div className="h-40  bg-gray-200 rounded-xl mb-4" />
+      <div className="h-40 bg-gray-200 rounded-xl mb-4" />
 
       <h3 className="font-semibold mb-1">{recipe.title}</h3>
 
