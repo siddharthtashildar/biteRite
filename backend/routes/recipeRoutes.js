@@ -1,13 +1,9 @@
 const express = require("express");
+
+const { generateRecipeController } = require("../controllers/recipeController");
+
 const router = express.Router();
 
-const recipeController = require("../controllers/recipeController");
-const auth = require("../middleware/authMiddleware");
-
-router.post("/create", auth, recipeController.createRecipe);
-
-router.post("/recommend", recipeController.getRecommendedRecipes);
-
-router.get("/:id", recipeController.getRecipeById);
+router.post("/generate", generateRecipeController);
 
 module.exports = router;

@@ -3,12 +3,41 @@ import { useState } from "react";
 function IngredientInput({ onGenerate }) {
   const [ingredients, setIngredients] = useState("");
   const [health, setHealth] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const toggleHealth = (item) => {
     if (health.includes(item)) {
       setHealth(health.filter((h) => h !== item));
     } else {
       setHealth([...health, item]);
+    }
+  };
+
+  const handleGenerate = async () => {
+
+    console.log("Generate button clicked i am gay ");
+
+    if (!ingredients.trim()) {
+      alert("Please enter at least one ingredient");
+      return;
+    }
+
+    const ingredientArray = ingredients
+      .split(",")
+      .map((i) => i.trim())
+      .filter((i) => i.length > 0);
+          console.log("Ingredients array:", ingredientArray);
+    console.log("Calling parent:", onGenerate);
+    console.log("Ingredients array:", ingredientArray);
+    try {
+      setLoading(true);
+
+      await onGenerate(ingredientArray, health);
+
+    } catch (error) {
+      console.error("Recipe generation failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,7 +60,7 @@ function IngredientInput({ onGenerate }) {
           <button
             key={item}
             onClick={() => toggleHealth(item)}
-            className={`px-3 py-1 rounded-full text-sm border ${
+            className={`px-3 py-1 rounded-full text-sm border transition ${
               health.includes(item)
                 ? "bg-green-500 text-white"
                 : "hover:bg-gray-100"
@@ -42,11 +71,14 @@ function IngredientInput({ onGenerate }) {
         ))}
       </div>
 
-      <button 
-        onClick={() => onGenerate(ingredients, health)}
-        className="bg-green-500 text-white px-6 py-2 rounded-lg"
+      <button
+        onClick={handleGenerate}
+        disabled={loading}
+        className={`px-6 py-2 rounded-lg text-white ${
+          loading ? "bg-gray-400" : "bg-green-500 hover:bg-green-600"
+        }`}
       >
-        Generate Recipe
+        {loading ? "Generating..." : "Generate Recipe"}
       </button>
     </div>
   );

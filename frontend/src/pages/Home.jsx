@@ -4,7 +4,8 @@ import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
 import IngredientInput from "../components/IngredientInput";
 import CommunityFeed from "../components/CommunityFeed";
-import { generateRecipes } from "../services/geminiService";
+import { generateRecipe } from "../services/recipeService";
+
 
 function Home() {
   const [recipes, setRecipes] = useState([
@@ -17,12 +18,35 @@ function Home() {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   const handleGenerate = async (ingredients, health) => {
-    if (!ingredients) return;
+    if (!ingredients || ingredients.length === 0) return;
+    console.log("Generate clicked big yahu saveee meeee", ingredients, health);
     setLoading(true);
-    const newRecipes = await generateRecipes(ingredients, health);
-    if (newRecipes.length > 0) {
-      setRecipes(newRecipes);
+    console.log("Calling backend...");
+    const response = await generateRecipe({
+      ingredients,
+      healthConditions: health
+    });
+
+    console.log("Backend response:", response);
+
+    let newRecipes = response.recipe;
+
+    // Gemini returns JSON as string → parse it
+    if (typeof newRecipes === "string") {
+      try {
+        newRecipes = JSON.parse(newRecipes);
+      } catch (err) {
+        console.error("JSON parse error:", err);
+        return;
+      }
     }
+
+    // ensure it's an array for the grid
+    if (!Array.isArray(newRecipes)) {
+      newRecipes = [newRecipes];
+    }
+
+    setRecipes(newRecipes);
     setLoading(false);
   };
 
@@ -62,7 +86,7 @@ function Home() {
         ) : (
           <div className="grid grid-cols-4 gap-6 mb-10">
             {recipes.map((recipe, i) => (
-              <RecipeCard key={i} recipe={recipe} onClick={setSelectedRecipe} />
+              <RecipeCard key={i} recipe={recipe} onClick={() => setSelectedRecipe(recipe)} />
             ))}
           </div>
         )}

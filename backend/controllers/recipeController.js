@@ -1,50 +1,45 @@
-const Recipe = require("../models/Recipe");
-const filterRecipes = require("../utils/healthRules");
+const { generateRecipe } = require("../services/geminiService");
+const { fetchRecipeImage } = require("../services/imageService");
 
-exports.createRecipe = async (req, res) => {
-
+async function generateRecipeController(req, res) {
   try {
 
-    const recipe = await Recipe.create(req.body);
+    const { ingredients, healthConditions } = req.body;
 
-    res.json(recipe);
+    let recipes = await generateRecipe(ingredients, healthConditions);
 
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    // parse if Gemini returned string
+    if (typeof recipes === "string") {
+      recipes = JSON.parse(recipes);
+    }
 
-};
+    if (!Array.isArray(recipes)) {
+      recipes = [recipes];
+    }
 
-exports.getRecommendedRecipes = async (req, res) => {
+    // fetch images
+    await Promise.all(
+      recipes.map(async (recipe) => {
+        const title = recipe.imageQuery;
+        recipe.image = await fetchRecipeImage(title);
+      })
+    );
 
-  try {
-
-    const { ingredients, conditions } = req.body;
-
-    const recipes = await Recipe.find({
-      ingredients: { $in: ingredients }
+    res.json({
+      success: true,
+      recipe: recipes
     });
 
-    const filtered = filterRecipes(recipes, conditions);
-
-    res.json(filtered);
-
   } catch (error) {
-    res.status(500).json({ error: error.message });
+
+    console.error("Recipe generation error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Recipe generation failed"
+    });
+
   }
+}
 
-};
-
-exports.getRecipeById = async (req, res) => {
-
-  try {
-
-    const recipe = await Recipe.findById(req.params.id);
-
-    res.json(recipe);
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-
-};
+module.exports = { generateRecipeController };
