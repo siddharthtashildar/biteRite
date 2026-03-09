@@ -1,8 +1,24 @@
 const Recipe = require("../models/Recipe");
 const filterRecipes = require("../utils/healthRules");
 
-exports.getRecommendedRecipes = async (req, res) => {
+exports.createRecipe = async (req, res) => {
+
   try {
+
+    const recipe = await Recipe.create(req.body);
+
+    res.json(recipe);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+};
+
+exports.getRecommendedRecipes = async (req, res) => {
+
+  try {
+
     const { ingredients, conditions } = req.body;
 
     const recipes = await Recipe.find({
@@ -16,13 +32,19 @@ exports.getRecommendedRecipes = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
 };
 
-exports.createRecipe = async (req, res) => {
+exports.getRecipeById = async (req, res) => {
+
   try {
-    const recipe = await Recipe.create(req.body);
+
+    const recipe = await Recipe.findById(req.params.id);
+
     res.json(recipe);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
 };
