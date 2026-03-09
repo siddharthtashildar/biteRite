@@ -5,24 +5,33 @@ function Sidebar() {
         <h2 className="text-2xl font-bold mb-8">BiteRite</h2>
 
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-12 h-12 rounded-full bg-gray-300" > 
-            <img src="src\assets\randomAhh\pfp.jpg" alt="pfp" className="w-full h-full rounded-full object-cover" />
-          </div>
+          <div className="w-12 h-12 rounded-full bg-gray-300" />
+
           <div>
-            <p className="font-medium">Jeffrey Epstien</p>
-            <p className="text-sm text-gray-500">  </p>
+            <p className="font-medium">User</p>
+            <p className="text-sm text-gray-500">Food Explorer</p>
           </div>
         </div>
 
-        <nav className="space-y-4">
-          <button className="w-full text-left px-4 py-2 rounded-lg bg-yellow-400 font-medium">
-            Recipes
+        <nav className="space-y-3">
+          <button className="w-full text-left px-4 py-2 rounded-lg bg-yellow-400">
+            Dashboard
           </button>
+
+          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
+            Generate Recipe
+          </button>
+
           <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
             Favorites
           </button>
+
           <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
             Community
+          </button>
+
+          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
+            Profile
           </button>
         </nav>
       </div>
