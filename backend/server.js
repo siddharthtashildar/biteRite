@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
+const fs = require("fs");
 
 const connectDB = require("./config/db");
 
@@ -17,6 +19,15 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Ensure uploads folder exists for storing images
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+// Serve uploaded images statically
+app.use("/uploads", express.static(uploadsDir));
 
 app.get("/", (req, res) => {
   res.send("BiteRite backend running");
