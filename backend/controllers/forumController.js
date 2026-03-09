@@ -15,11 +15,14 @@ exports.createPost = async (req, res) => {
 
     const now = new Date();
 
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
     const post = {
       _id: String(nextId++),
       content: content.trim(),
       authorName:
         authorName && authorName.trim() ? authorName.trim() : "Anonymous",
+      imageUrl,
       likesCount: 0,
       comments: [],
       createdAt: now,
