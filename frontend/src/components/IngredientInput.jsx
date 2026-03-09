@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function IngredientInput() {
+function IngredientInput({ onGenerate }) {
   const [ingredients, setIngredients] = useState("");
   const [health, setHealth] = useState([]);
 
@@ -42,7 +42,10 @@ function IngredientInput() {
         ))}
       </div>
 
-      <button className="bg-green-500 text-white px-6 py-2 rounded-lg">
+      <button 
+        onClick={() => onGenerate(ingredients, health)}
+        className="bg-green-500 text-white px-6 py-2 rounded-lg"
+      >
         Generate Recipe
       </button>
     </div>

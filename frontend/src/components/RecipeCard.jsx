@@ -1,4 +1,4 @@
-function RecipeCard({ recipe }) {
+function RecipeCard({ recipe, onClick }) {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition">
       <div className="h-40 bg-gray-200 rounded-xl mb-4" />
@@ -7,7 +7,10 @@ function RecipeCard({ recipe }) {
 
       <p className="text-sm text-gray-500 mb-3">{recipe.time}</p>
 
-      <button className="w-full py-2 text-sm bg-green-500 text-white rounded-lg">
+      <button 
+        onClick={() => onClick(recipe)}
+        className="w-full py-2 text-sm bg-green-500 text-white rounded-lg"
+      >
         View Recipe
       </button>
     </div>
