@@ -2,6 +2,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
 
+
 const recipes = [
   { title: "Special Salad Chicken", time: "20 mins" },
   { title: "Noodle Chicken", time: "20 mins" },
