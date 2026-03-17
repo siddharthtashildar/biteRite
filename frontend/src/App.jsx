@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 function App() {
   const [count, setCount] = useState(0)
 
+<<<<<<< HEAD:src/App.jsx
  return (
 <>
    <header>
@@ -33,6 +34,14 @@ function App() {
   
   </>
 )
+=======
+  return (
+    <>
+    
+    <Home />;
+    </>
+  )
+>>>>>>> main:frontend/src/App.jsx
 }
 
 export default App
