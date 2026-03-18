@@ -1,7 +1,6 @@
 
 import { SignedIn, SignedOut, RedirectToSignIn, useUser } from "@clerk/clerk-react";
 import { Routes, Route } from "react-router-dom";
-
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import UserInfo from "./pages/userProfile";
