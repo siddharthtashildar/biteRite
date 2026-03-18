@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import './App.css'
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import Home from "./pages/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-    
-    <Home />;
+      <SignedIn>
+        <Home />
+      </SignedIn>
+
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
