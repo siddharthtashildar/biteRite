@@ -1,6 +1,9 @@
 import { UserButton, useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
+
+  const navigate = useNavigate();
 
   const { user } = useUser();
 
@@ -31,7 +34,7 @@ function Sidebar() {
         {/* Navigation */}
         <nav className="space-y-3">
 
-          <button className="w-full text-left px-4 py-2 rounded-lg bg-yellow-400">
+          <button onClick={() => navigate("/")} className="w-full text-left px-4 py-2 rounded-lg bg-yellow-400">
             Dashboard
           </button>
 
@@ -47,7 +50,7 @@ function Sidebar() {
             Community
           </button>
 
-          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
+          <button onClick={() => navigate("/profile")} className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
             Profile
           </button>
 
