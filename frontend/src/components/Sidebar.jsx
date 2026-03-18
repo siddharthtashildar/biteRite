@@ -1,64 +1,118 @@
+import { useState } from "react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import {
+  FiHome,
+  FiHeart,
+  FiUsers,
+  FiUser,
+  FiMenu
+} from "react-icons/fi";
 
 function Sidebar() {
 
-  const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
 
+  const navigate = useNavigate();
   const { user } = useUser();
 
   return (
-    <div className="w-64 bg-white p-6 flex flex-col justify-between rounded-r-3xl">
+    <div
+      className={`h-screen bg-white p-4 flex flex-col justify-between rounded-r-3xl transition-all duration-300 ${
+        collapsed ? "w-20" : "w-64"
+      }`}
+    >
 
+      {/* TOP */}
       <div>
 
-        <h2 className="text-2xl font-bold mb-8">BiteRite</h2>
+        {/* Toggle Button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="mb-6 p-2 rounded-lg hover:bg-gray-100"
+        >
+          <FiMenu size={20} />
+        </button>
+
+        {/* Logo */}
+        {!collapsed && (
+          <h2 className="text-2xl font-bold mb-8">BiteRite</h2>
+        )}
 
         {/* User Section */}
         <div className="flex items-center gap-3 mb-10">
 
-          {/* Clerk Avatar + Logout */}
           <UserButton afterSignOutUrl="/" />
 
-          <div>
-            <p className="font-medium">
-              {user?.fullName || "User"}
-            </p>
-            <p className="text-sm text-gray-500">
-              {user?.primaryEmailAddress?.emailAddress || "Food Explorer"}
-            </p>
-          </div>
-
+          {!collapsed && (
+            <div>
+              <p className="font-medium">
+                {user?.fullName || "User"}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
         <nav className="space-y-3">
 
-          <button onClick={() => navigate("/")} className="w-full text-left px-4 py-2 rounded-lg bg-yellow-400">
-            Dashboard
-          </button>
+          <NavItem
+            icon={<FiHome />}
+            label="Dashboard"
+            collapsed={collapsed}
+            onClick={() => navigate("/")}
+            active
+          />
 
-          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
-            Generate Recipe
-          </button>
+          <NavItem
+            icon={<FiMenu />}
+            label="Generate"
+            collapsed={collapsed}
+            onClick={() => navigate("/generate")}
+            
+          />
 
-          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
-            Favorites
-          </button>
+          <NavItem
+            icon={<FiHeart />}
+            label="Favorites"
+            collapsed={collapsed}
+          />
 
-          <button className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
-            Community
-          </button>
+          <NavItem
+            icon={<FiUsers />}
+            label="Community"
+            collapsed={collapsed}
+          />
 
-          <button onClick={() => navigate("/profile")} className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">
-            Profile
-          </button>
+          <NavItem
+            icon={<FiUser />}
+            label="Profile"
+            collapsed={collapsed}
+            onClick={() => navigate("/profile")}
+          />
 
         </nav>
 
       </div>
-
     </div>
+  );
+}
+
+/* 🔥 Reusable Nav Item */
+function NavItem({ icon, label, collapsed, onClick, active }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition ${
+        active
+          ? "bg-yellow-400"
+          : "hover:bg-gray-100"
+      }`}
+    >
+      <span className="text-lg">{icon}</span>
+
+      {!collapsed && <span>{label}</span>}
+    </button>
   );
 }
 

@@ -22,12 +22,15 @@ async function generateRecipe(ingredients, healthConditions) {
 
     [
     {
-    "title": "",
-    "imageQuery": "short food search phrase",
-    "time": "",
-    "ingredients": [],
-    "instructions": [],
-    "calories": ""
+      "title": "",
+      "imageQuery": "",
+      "time": "",
+      "ingredients": [],
+      "instructions": [],
+      "calories": "",
+      "protein": "",
+      "carbs": "",
+      "fat": ""
     }
     ]
 

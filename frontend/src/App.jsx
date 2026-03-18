@@ -4,6 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import UserInfo from "./pages/userProfile";
+import Onboarding from "./pages/Onboarding";
+import Generate from "./pages/Generate";
+import Results from "./pages/Results";
+import Recipe from "./pages/Recipe";
 
 function App() {
 
@@ -34,7 +38,11 @@ function App() {
       <SignedIn>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/generate" element={<Generate />} />
+          <Route path="/results" element={<Results />} />
           <Route path="/profile" element={<UserInfo/>} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/recipe/:id" element={<Recipe />} />
         </Routes>
       </SignedIn>
 

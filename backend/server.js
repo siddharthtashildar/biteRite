@@ -13,6 +13,7 @@ const forumRoutes = require("./routes/forumRoutes");
 
 
 
+
 connectDB();
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/forum", forumRoutes);
+app.use("/api/users", require("./routes/userRoutes"));
 
 const PORT = process.env.PORT || 5000;
 

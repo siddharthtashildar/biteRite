@@ -1,43 +1,24 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
+  clerkId: { type: String, required: true, unique: true },
 
-  name: {
-    type: String,
-    required: true
-  },
+  name: String,
+  email: String,
 
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-
-  password: {
-    type: String,
-    required: true
-  },
-
-  role: {
-    type: String,
-    enum: ["user", "dietitian", "admin"],
-    default: "user"
-  },
+  dietType: String,
+  healthConditions: [String],
+  allergies: [String],
 
   age: Number,
-  height: Number,
   weight: Number,
+  goal: String,
 
-  dietaryPreferences: [String],
-  healthConditions: [String],
+  onboardingCompleted: {
+    type: Boolean,
+    default: false
+  }
 
-  savedRecipes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Recipe"
-    }
-  ]
+}, { timestamps: true });
 
-});
-
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("User", userSchema);

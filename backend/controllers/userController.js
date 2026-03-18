@@ -1,54 +1,66 @@
 const User = require("../models/User");
 
-exports.updateProfile = async (req, res) => {
-
+async function saveUserData(req, res) {
   try {
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      req.body,
-      { new: true }
+    const {
+      clerkId,
+      name,
+      email,
+      dietType,
+      healthConditions,
+      allergies,
+      age,
+      weight,
+      goal
+    } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { clerkId },
+      {
+        name,
+        email,
+        dietType,
+        healthConditions,
+        allergies,
+        age,
+        weight,
+        goal,
+        onboardingCompleted: true
+      },
+      {
+        returnDocument: "after", // ✅ replaces new: true
+        upsert: true
+      }
     );
 
-    res.json(user);
+    res.json({ success: true });
 
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Onboarding error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to save user"
+    });
   }
+}
 
-};
-
-exports.saveRecipe = async (req, res) => {
-
+async function checkUser(req, res) {
   try {
 
-    const { recipeId } = req.body;
+    const { clerkId } = req.params;
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({ clerkId });
 
-    user.savedRecipes.push(recipeId);
-
-    await user.save();
-
-    res.json({ message: "Recipe saved" });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-
-};
-
-exports.getSavedRecipes = async (req, res) => {
-
-  try {
-
-    const user = await User.findById(req.user.id)
-      .populate("savedRecipes");
-
-    res.json(user.savedRecipes);
+    res.json({
+      exists: !!user,
+      onboardingCompleted: user?.onboardingCompleted || false
+    });
 
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Check user error:", error);
+    res.status(500).json({ success: false });
   }
+}
 
-};
+module.exports = { saveUserData, checkUser };

@@ -1,133 +1,107 @@
-import { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import RecipeCard from "../components/RecipeCard";
-import IngredientInput from "../components/IngredientInput";
-import CommunityFeed from "../components/CommunityFeed";
-import { generateRecipe } from "../services/recipeService";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [recipes, setRecipes] = useState([
-    { title: "Special Salad Chicken", time: "20 mins" },
-    { title: "Noodle Chicken", time: "20 mins" },
-    { title: "Chicken with green veg", time: "20 mins" },
-    { title: "Spicy Chicken Bowl", time: "20 mins" },
-  ]);
-  const [loading, setLoading] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  const handleGenerate = async (ingredients, health) => {
-    if (!ingredients || ingredients.length === 0) return;
-    console.log("Generate clicked big yahu saveee meeee", ingredients, health);
-    setLoading(true);
-    console.log("Calling backend...");
-    const response = await generateRecipe({
-      ingredients,
-      healthConditions: health
-    });
-
-    console.log("Backend response:", response);
-
-    let newRecipes = response.recipe;
-
-    // Gemini returns JSON as string → parse it
-    if (typeof newRecipes === "string") {
-      try {
-        newRecipes = JSON.parse(newRecipes);
-      } catch (err) {
-        console.error("JSON parse error:", err);
-        return;
-      }
-    }
-
-    // ensure it's an array for the grid
-    if (!Array.isArray(newRecipes)) {
-      newRecipes = [newRecipes];
-    }
-
-    setRecipes(newRecipes);
-    setLoading(false);
-  };
-
-  const saveRecipeToDb = async (recipe) => {
-    try {
-      const response = await fetch("http://localhost:5000/api/recipes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(recipe),
-      });
-      if (response.ok) alert("Recipe saved successfully!");
-    } catch (error) {
-      console.error("Error saving recipe:", error);
-      alert("Failed to save recipe. Is the backend running?");
-    }
-  };
+  const navigate = useNavigate();
+  const [active, setActive] = useState("Pizza");
 
   return (
-    <div className="flex min-h-screen bg-[#f6f4ef]">
+    <div className="flex min-h-screen bg-[#f3efe9]">
+
+      {/* Sidebar */}
       <Sidebar />
+      <div className="flex-1">
+<div className="flex-1 p-10">
 
-      <div className="flex-1 p-8">
-        <Navbar />
+  {/* TOP BAR */}
+  <div className="flex justify-between items-center mb-10">
+    <input
+      placeholder="Search recipes..."
+      className="px-5 py-3 rounded-full w-96 bg-white border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+    />
 
-        <h1 className="text-3xl font-semibold mt-8 mb-4">
-          Learn, Cook & Eat Healthy
-        </h1>
+    <button className="bg-yellow-400 px-5 py-2 rounded-full font-medium shadow-sm hover:scale-105 transition">
+      Premium →
+    </button>
+  </div>
 
-        {/* Ingredient Input */}
-        <IngredientInput onGenerate={handleGenerate} />
 
-        {/* Recipe Section */}
-        <h2 className="text-xl font-semibold mb-4">Recommended Recipes</h2>
+  {/* HERO SECTION */}
+  <div className="relative flex items-center justify-between bg-white rounded-3xl px-12 py-14 shadow-md overflow-hidden">
 
-        {loading ? (
-          <div className="py-10 text-center text-gray-500">Generating recipes...</div>
-        ) : (
-          <div className="grid grid-cols-4 gap-6 mb-10">
-            {recipes.map((recipe, i) => (
-              <RecipeCard key={i} recipe={recipe} onClick={() => setSelectedRecipe(recipe)} />
+    {/* 🌟 GRADIENT GLOW */}
+    <div className="absolute right-10 top-10 w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-30"></div>
+
+    {/* 🌟 DOT PATTERN */}
+    <div className="absolute right-20 top-16 grid grid-cols-6 gap-3 opacity-20">
+      {Array.from({ length: 36 }).map((_, i) => (
+        <div key={i} className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+      ))}
+    </div>
+
+
+    {/* LEFT CONTENT */}
+    <div className="max-w-xl relative z-10">
+
+      <p className="text-sm text-gray-400 mb-3 tracking-wide">
+        More than 10,000 recipes
+      </p>
+
+      <h1 className="text-5xl font-semibold leading-tight mb-8">
+        Generate Best Recipes <br />
+        for your Meals
+      </h1>
+
+      <button
+        onClick={() => navigate("/generate")}
+        className="bg-green-500 text-white px-8 py-3 rounded-full text-sm font-medium shadow-lg hover:scale-105 hover:bg-green-600 transition"
+      >
+        Generate →
+      </button>
+
+    </div>
+
+
+    {/* RIGHT IMAGE */}
+    <div className="hidden md:flex justify-center items-center relative z-10">
+
+      <img
+        src="/src/assets/food.png"
+        className="w-[380px] h-[380px] object-contain drop-shadow-2xl hover:scale-105 transition duration-300"
+      />
+
+    </div>
+
+  </div>
+
+</div>
+
+        {/* Main */}
+        <div className="flex-1 p-8">
+
+          {/* Title */}
+          <h1 className="text-3xl font-semibold mb-6">
+            Learn, Cook, & Eat your food
+          </h1>
+
+          {/* Category Pills */}
+          <div className="flex gap-3 mb-10">
+            {["Pizza", "Dessert", "Noodle", "Cocktails", "Salad"].map((item) => (
+              <button
+                key={item}
+                onClick={() => setActive(item)}
+                className={`px-4 py-2 rounded-full text-sm transition ${active === item
+                    ? "bg-black text-white"
+                    : "bg-white border"
+                  }`}
+              >
+                {item}
+              </button>
             ))}
           </div>
-        )}
-
-        {/* Community Section */}
-        <CommunityFeed />
-
-        {/* Recipe Details Modal */}
-        {selectedRecipe && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold">{selectedRecipe.title}</h2>
-                <button onClick={() => setSelectedRecipe(null)} className="text-gray-500 hover:text-gray-700 text-xl">✕</button>
-              </div>
-              
-              <div className="flex gap-4 text-sm text-gray-600 mb-6">
-                <span>🕒 {selectedRecipe.time}</span>
-                <span>🔥 {selectedRecipe.calories || "N/A"}</span>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="font-semibold mb-2">Ingredients</h3>
-                <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                  {selectedRecipe.ingredients?.map((ing, i) => <li key={i}>{ing}</li>) || <p>No ingredients listed.</p>}
-                </ul>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="font-semibold mb-2">Instructions</h3>
-                <ol className="list-decimal pl-5 space-y-2 text-gray-700">
-                  {selectedRecipe.instructions?.map((step, i) => <li key={i}>{step}</li>) || <p>No instructions listed.</p>}
-                </ol>
-              </div>
-
-              <button onClick={() => saveRecipeToDb(selectedRecipe)} className="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600">
-                Save to Collection
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
