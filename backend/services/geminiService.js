@@ -12,7 +12,7 @@ async function generateRecipe(ingredients, healthConditions) {
     });
 
     const prompt = `
-    Generate 3 healthy recipes using these ingredients:
+    Generate 4 healthy recipes using these ingredients:
 
     ${ingredients.join(", ")}
 
