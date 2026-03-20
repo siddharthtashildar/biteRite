@@ -82,6 +82,8 @@ function Sidebar() {
             icon={<FiUsers />}
             label="Community"
             collapsed={collapsed}
+            onClick={() => navigate("/CommunityFeed")}
+            active={window.location.pathname === "/CommunityFeed"}
           />
 
           <NavItem

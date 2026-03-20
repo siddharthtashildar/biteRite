@@ -1,4 +1,7 @@
+
 import { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const API_HOST = "http://localhost:5000";
 const API_BASE = `${API_HOST}/api/forum`;
@@ -114,7 +117,12 @@ function CommunityFeed() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm">
+    <div className="flex min-h-screen bg-[#f6f4ef]">
+      <Sidebar />
+      <div className="flex-1 p-10">
+      <Navbar />
+      
+    <div className="bg-white p-6 rounded-2xl shadow-sm mt-8 mb-8">
       <h2 className="text-lg font-semibold mb-4">Community Forum</h2>
 
       {error && (
@@ -257,6 +265,8 @@ function CommunityFeed() {
           ))}
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 }
