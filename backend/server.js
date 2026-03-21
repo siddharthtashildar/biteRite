@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log("DB String Check:", process.env.MONGODB_URI ? "Found it!" : "Still missing from process.env");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -11,8 +12,7 @@ const recipeRoutes = require("./routes/recipeRoutes");
 const userRoutes = require("./routes/userRoutes");
 const forumRoutes = require("./routes/forumRoutes");
 
-
-
+const mongoose = require("mongoose");
 
 connectDB();
 
