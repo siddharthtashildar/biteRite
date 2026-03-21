@@ -8,6 +8,7 @@ import Onboarding from "./pages/Onboarding";
 import Generate from "./pages/Generate";
 import Results from "./pages/Results";
 import Recipe from "./pages/Recipe";
+import CommunityFeed from "./pages/CommunityFeed";
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/profile" element={<UserInfo/>} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/recipe/:id" element={<Recipe />} />
+          <Route path="/CommunityFeed" element={<CommunityFeed />} />
         </Routes>
       </SignedIn>
 
