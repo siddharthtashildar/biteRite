@@ -17,6 +17,8 @@ async function fetchRecipeImage(query) {
   );
 
   const results = response.data.results;
+  //console.log(results);
+
 
   if (results.length > 0) {
 

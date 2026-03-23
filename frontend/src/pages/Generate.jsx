@@ -4,11 +4,17 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
 
+import { useUser } from "@clerk/clerk-react";
+
+
+
 function Generate() {
   const [ingredients, setIngredients] = useState("");
   const [health, setHealth] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { user } = useUser();
 
   const navigate = useNavigate();
 
@@ -34,7 +40,8 @@ function Generate() {
         },
         body: JSON.stringify({
           ingredients: ingredients.split(","),
-          healthConditions: health
+          healthConditions: health,
+          clerkId: user.id   // 🔥 REQUIRED
         })
       });
 

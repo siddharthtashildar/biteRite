@@ -12,7 +12,7 @@ async function generateRecipe(ingredients, healthConditions) {
     });
 
     const prompt = `
-    Generate 4 healthy recipes using these ingredients:
+    Generate 6 healthy recipes using these ingredients:
 
     ${ingredients.join(", ")}
 
@@ -25,6 +25,7 @@ async function generateRecipe(ingredients, healthConditions) {
       "title": "",
       "imageQuery": "",
       "time": "",
+      "dietType": "veg | non-veg | vegan",
       "ingredients": [],
       "instructions": [],
       "calories": "",
@@ -38,11 +39,14 @@ async function generateRecipe(ingredients, healthConditions) {
     - imageQuery should be 2–4 words describing the dish
     - imageQuery must be suitable for searching food photos
     - Example imageQuery: "shakshuka eggs", "tomato omelette", "chicken salad"
+    - dietType MUST be one of: veg, non-veg, vegan
     `;
 
     const result = await model.generateContent(prompt);
 
     const text = result.response.text();
+
+    console.log(text);
 
     return text;
 

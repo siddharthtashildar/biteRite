@@ -32,9 +32,9 @@ function Onboarding() {
     }));
   };
 
-  const handleSubmit = async () => {
-
-    await fetch("http://localhost:5000/api/users/onboarding", {
+ const handleSubmit = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/users/onboarding", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -47,9 +47,17 @@ function Onboarding() {
       })
     });
 
-    navigate("/");
-  };
+    const data = await res.json();
 
+    console.log("Onboarding response:", data);
+
+    // 🔥 FORCE RELOAD APP STATE
+    window.location.href = "/";
+
+  } catch (err) {
+    console.error("Onboarding failed:", err);
+  }
+};
   const cardAnimation = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },

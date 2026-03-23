@@ -2,15 +2,66 @@ import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-react";
 
 function Recipe() {
   const { state } = useLocation();
   const recipe = state;
 
+  const { user } = useUser();
+
   const [saved, setSaved] = useState(false);
   const [fav, setFav] = useState(false);
 
   if (!recipe) return <p>No recipe found</p>;
+
+  const {
+    title = "Untitled Recipe",
+    image = "https://via.placeholder.com/800",
+    cookingTime = 20,
+    dietType = "veg",
+    ingredients = [],
+    instructions = [],
+    nutrition = {}
+  } = recipe;
+
+  // 🔥 extract nutrition safely
+  const {
+    calories = 250,
+    protein = 15,
+    carbs = 30,
+    fat = 10
+  } = nutrition;
+
+  // 🔥 SAVE API
+  const handleSave = async () => {
+    try {
+      await fetch(`http://localhost:5000/api/users/save/${recipe._id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkId: user.id })
+      });
+
+      setSaved(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 🔥 FAVORITE API  
+  const handleFav = async () => {
+    try {
+      await fetch(`http://localhost:5000/api/users/favorite/${recipe._id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkId: user.id })
+      });
+
+      setFav(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-[#f6f4ef] dark:bg-gray-900">
@@ -21,57 +72,64 @@ function Recipe() {
         <Navbar />
 
         {/* 🔥 HERO IMAGE */}
-        <div className="w-full h-72 rounded-3xl overflow-hidden shadow-md mt-8 mb-8">
+        <div className="relative w-full h-80 rounded-3xl overflow-hidden shadow-md mt-8 mb-10">
+
           <img
-            src={recipe.image}
+            src={image}
             className="w-full h-full object-cover"
           />
+
+          {/* GRADIENT OVERLAY */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+          {/* TEXT ON IMAGE */}
+          <div className="absolute bottom-6 left-6 text-white">
+            <h1 className="text-3xl font-bold">{title}</h1>
+
+            <p className="text-sm opacity-80">
+              ⏱ {cookingTime} Mins • 🔥 {calories} kcal
+            </p>
+          </div>
+
+          {/* DIET TAG */}
+          <div className="absolute top-5 right-5">
+            <span className={`px-3 py-1 text-xs rounded-full font-medium ${dietType === "veg"
+                ? "bg-green-500 text-white"
+                : dietType === "vegan"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-red-500 text-white"
+              }`}>
+              {dietType}
+            </span>
+          </div>
         </div>
 
         {/* MAIN CARD */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-md">
 
-          {/* HEADER */}
-          <div className="flex justify-between items-start mb-8">
+          {/* ACTION BUTTONS */}
+          <div className="flex justify-end gap-3 mb-6">
 
-            <div>
-              <h1 className="text-3xl font-bold mb-2 text-black dark:text-white">
-                {recipe.title}
-              </h1>
-
-              <div className="flex gap-6 text-sm text-gray-500 dark:text-gray-400">
-                <span>🔥 {recipe.calories || "250 kcal"}</span>
-                <span>⏱ {recipe.time || "20 mins"}</span>
-                <span>🍽 Serves 2</span>
-              </div>
-            </div>
-
-            {/* ACTION BUTTONS */}
-            <div className="flex gap-3">
-
-              <button
-                onClick={() => setFav(!fav)}
-                className={`px-4 py-2 rounded-xl text-sm transition ${
-                  fav
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+            <button
+              onClick={handleFav}
+              className={`px-4 py-2 rounded-xl text-sm transition ${fav
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                 }`}
-              >
-                ❤️ Favorite
-              </button>
+            >
+              ❤️ Favorite
+            </button>
 
-              <button
-                onClick={() => setSaved(!saved)}
-                className={`px-4 py-2 rounded-xl text-sm transition ${
-                  saved
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+            <button
+              onClick={handleSave}
+              className={`px-4 py-2 rounded-xl text-sm transition ${saved
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                 }`}
-              >
-                💾 Save
-              </button>
+            >
+              💾 Save
+            </button>
 
-            </div>
           </div>
 
           {/* 🧠 NUTRITION */}
@@ -83,10 +141,10 @@ function Recipe() {
             <div className="grid grid-cols-4 gap-4">
 
               {[
-                { label: "Calories", value: recipe.calories || "250" },
-                { label: "Protein", value: recipe.protein || "15g" },
-                { label: "Carbs", value: recipe.carbs || "30g" },
-                { label: "Fat", value: recipe.fat || "10g" },
+                { label: "Calories", value: `${calories}` },
+                { label: "Protein", value: `${protein}g` },
+                { label: "Carbs", value: `${carbs}g` },
+                { label: "Fat", value: `${fat}g` },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -114,7 +172,7 @@ function Recipe() {
               </h2>
 
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                {recipe.ingredients?.map((item, i) => (
+                {ingredients.map((item, i) => (
                   <li key={i} className="border-b border-gray-200 dark:border-gray-600 pb-1">
                     {item}
                   </li>
@@ -128,15 +186,19 @@ function Recipe() {
                 Instructions
               </h2>
 
-              <ol className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-                {recipe.instructions?.map((step, i) => (
-                  <li key={i}>
-                    <span className="font-semibold text-black dark:text-white">
-                      Step {i + 1}:
-                    </span>{" "}
-                    {step}
-                  </li>
-                ))}
+              <ol className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+                {instructions.length > 0 ? (
+                  instructions.map((step, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="bg-green-500 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">
+                        {i + 1}
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No instructions available</p>
+                )}
               </ol>
             </div>
 
