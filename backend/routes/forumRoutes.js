@@ -36,4 +36,6 @@ router.post("/comment/:id", forumController.comment);
 
 router.post("/like/:id", forumController.toggleLike);
 
+router.delete("/delete/:id", forumController.deletePost);
+
 module.exports = router;

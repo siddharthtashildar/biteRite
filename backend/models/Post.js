@@ -21,10 +21,11 @@ const PostSchema = new mongoose.Schema(
     },
 
     // Simple like counter (no per-user tracking)
-    likesCount: {
-      type: Number,
-      default: 0
-    },
+    likes:[
+      {
+        type: String, // Storing Clerk User IDs or IP addresses
+      }
+    ],
 
     comments: [
       {
