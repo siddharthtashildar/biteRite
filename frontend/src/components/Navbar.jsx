@@ -12,8 +12,7 @@ const path = location.pathname.toLowerCase();
 return ( <div className="
    flex justify-between items-center w-full mb-6
    px-6 py-3
-   bg-white dark:bg-gray-900
-   border-b border-gray-200 dark:border-gray-800
+   
  ">
 
 
