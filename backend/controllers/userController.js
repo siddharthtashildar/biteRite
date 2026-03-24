@@ -45,6 +45,24 @@ async function saveUserData(req, res) {
   }
 }
 
+async function getUserByClerkId(req, res) {
+  try {
+    const { clerkId } = req.params;
+
+    const user = await User.findOne({ clerkId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+
+  } catch (error) {
+    console.error("Get user error:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
 async function checkUser(req, res) {
   try {
 
@@ -62,5 +80,49 @@ async function checkUser(req, res) {
     res.status(500).json({ success: false });
   }
 }
+async function updateUser(req, res) {
+  try {
+    const { clerkId } = req.params;
 
-module.exports = { saveUserData, checkUser };
+    const updatedUser = await User.findOneAndUpdate(
+      { clerkId },
+      req.body,
+      { new: true }
+    );
+
+    res.json(updatedUser);
+
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+async function syncUser(req, res) {
+  try {
+    const { clerkId, email, name } = req.body;
+
+    let existingUser = await User.findOne({ clerkId });
+
+    if (!existingUser) {
+      const newUser = new User({
+        clerkId,
+        email,
+        name,
+        onboardingCompleted: false,
+      });
+
+      await newUser.save();
+      console.log("✅ New user created");
+      return res.json(newUser);
+    }
+
+    console.log("👀 User already exists");
+    return res.json(existingUser);
+
+  } catch (error) {
+    console.error("Sync error:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { saveUserData, checkUser, syncUser, getUserByClerkId, updateUser};

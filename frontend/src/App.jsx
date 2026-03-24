@@ -23,43 +23,47 @@ function App() {
   const [onboardingDone, setOnboardingDone] = useState(false);
 
   useEffect(() => {
-    // ⛔ wait until Clerk is ready
-    if (!isLoaded) return;
+      document.documentElement.classList.add("dark");
 
-    // 👇 if user NOT logged in → stop loading
-    if (!user) {
+  if (!isLoaded) return;
+
+  if (!user) {
+    setLoading(false);
+    return;
+  }
+
+  const syncUser = async () => {
+    try {
+      console.log("Syncing user:", user.id);
+
+      const res = await fetch("http://localhost:5000/api/users/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clerkId: user.id,
+          email: user.primaryEmailAddress?.emailAddress,
+          name: user.fullName,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log("User sync:", data);
+
+      setOnboardingDone(data.onboardingCompleted || false);
+
+    } catch (err) {
+      console.error("Sync error:", err);
+      setOnboardingDone(false);
+    } finally {
       setLoading(false);
-      return;
     }
+  };
 
-    const checkUser = async () => {
-      try {
-        console.log("Checking user:", user.id);
-
-        const res = await fetch(
-          `http://localhost:5000/api/users/check/${user.id}`
-        );
-
-        const data = await res.json();
-
-        console.log("User check:", data);
-
-        setOnboardingDone(data.onboardingCompleted || false);
-
-      } catch (err) {
-        console.error("Check user error:", err);
-
-        // fallback → force onboarding
-        setOnboardingDone(false);
-
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-
-  }, [user, isLoaded]);
+  syncUser();
+}, [user, isLoaded]);
 
   // ⏳ wait till clerk + backend check complete
   if (!isLoaded) return <p>Loading Clerk...</p>;
