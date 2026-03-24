@@ -30,13 +30,33 @@ exports.createPost = async (req, res) => {
 // 2. Get All Posts (Fetches from MongoDB)
 exports.getPosts = async (req, res) => {
   try {
-    // Fetch posts from Atlas, sorted by newest first
-    const posts = await Post.find().sort({ createdAt: -1 });
+    // Sort logic: Recipes with most upvotes first, then by date
+    const posts = await Post.find().sort({ upvotes: -1, createdAt: -1 });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.toggleUpvote = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Not found" });
+
+    const index = post.upvotes.indexOf(userId);
+    if (index === -1) {
+      post.upvotes.push(userId); // Approve
+    } else {
+      post.upvotes.splice(index, 1); // Remove approval
+    }
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // 3. Add a Comment
 exports.comment = async (req, res) => {
