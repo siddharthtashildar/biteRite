@@ -1,16 +1,70 @@
-# React + Vite
+# 🍽️ BiteRite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+BiteRite is a full-stack web application that helps users generate personalized recipes based on their dietary preferences, health conditions, and goals. It also features a community forum where users can share ideas, recipes, and interact with others.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+### 👤 Authentication
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Secure login/signup using Clerk
+* User session management
 
-## Expanding the ESLint configuration
+### 🧠 Personalized Experience
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* Onboarding flow to collect:
+
+  * Diet type
+  * Allergies
+  * Health conditions
+  * Goals (weight loss, muscle gain, etc.)
+* Stores user preferences in MongoDB
+
+### 🍳 Recipe Generation
+
+* AI-powered recipe generation
+* Customized based on user profile
+* Clean and structured results page
+
+### 👥 Community Forum
+
+* Create posts with text and images
+* Comment on posts
+* Like posts
+* Delete your posts
+
+### 📝 User Profile
+
+* View and edit personal information
+* Health details and dietary preferences
+* Real-time updates synced with database
+
+### 🌙 UI/UX
+
+* Dark mode support
+* Responsive and modern UI
+* Smooth interactions and transitions
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React.js (Vite)
+* Tailwind CSS
+* React Router
+* Clerk Authentication
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB (Mongoose)
+
+### APIs & Services
+
+* Gemini API (for recipe generation)
+* Unsplash API (for images)
+---
