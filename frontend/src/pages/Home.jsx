@@ -16,6 +16,7 @@ function Home() {
   const [saved, setSaved] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [displayRecipes, setDisplayRecipes] = useState([]);
+  const [recentRecipes, setRecentRecipes] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -52,6 +53,29 @@ function Home() {
       .sort(() => 0.5 - Math.random())
       .slice(0, n);
   }
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchRecent = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/recipes/recent/${user.id}`
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          setRecentRecipes(data.recipes);
+        }
+
+      } catch (err) {
+        console.error("Failed to fetch recent recipes", err);
+      }
+    };
+
+    fetchRecent();
+  }, [user]);
 
   return (
     <div className={`flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition`}>
@@ -152,7 +176,7 @@ function Home() {
               </button>
             ))}
             <div className="grid grid-cols-3 gap-8 mt-8  w-full">
-              
+
               {displayRecipes.length > 0 ? (
                 displayRecipes.map((recipe, i) => (
                   <RecipeCard
@@ -174,6 +198,28 @@ function Home() {
           <h2 className="text-2xl font-semibold mb-6 mt-10 text-black dark:text-white">
             Recent
           </h2>
+
+          {recentRecipes.length === 0 ? (
+            <div className="text-gray-500 dark:text-gray-400">
+              No recent recipes yet 👀
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-6 animate-fadeIn">
+              {recentRecipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe._id}
+                  recipe={{
+                    ...recipe,
+                    time: recipe.time || "20 mins",
+                    calories: recipe.nutrition?.calories || recipe.calories
+                  }}
+                  onClick={(r) =>
+                    navigate(`/recipe/${r._id}`, { state: r })
+                  }
+                />
+              ))}
+            </div>
+          )}
 
         </div>
 
