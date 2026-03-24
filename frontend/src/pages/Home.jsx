@@ -1,29 +1,74 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import RecipeCard from "../components/RecipeCard";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+
 
 function Home() {
   const navigate = useNavigate();
-  const [active, setActive] = useState("Pizza");
+  const [active, setActive] = useState("Recommended");
+
+  const { user } = useUser();
+
+  const [generated, setGenerated] = useState([]);
+  const [saved, setSaved] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [displayRecipes, setDisplayRecipes] = useState([]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/users/recipes/${user.id}`
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          setGenerated(data.generated || []);
+          setSaved(data.saved || []);
+          setFavorites(data.favorites || []);
+
+          // 🔥 default = recommended
+          setDisplayRecipes(getRandom(data.generated, 6));
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchRecipes();
+  }, [user]);
+
+  function getRandom(arr, n) {
+    if (!arr) return [];
+
+    return [...arr]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, n);
+  }
 
   return (
-    <div className="flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition">
+    <div className={`flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition`}>
 
       {/* SIDEBAR */}
       <Sidebar />
 
       {/* MAIN */}
-      <div className="flex-1 p-10">
+      <div className={`flex-1 p-10`}>
 
         <Navbar />
 
         {/* HERO */}
-        <div className="
+        <div className={`
           relative flex items-center justify-between 
           bg-white dark:bg-gray-800 
-          rounded-3xl px-12 py-14 shadow-md overflow-hidden
-        ">
+          rounded-3xl px-12 py-14 shadow-md overflow-hidden`}>
 
           {/* 🌟 GLOW */}
           <div className="absolute right-10 top-10 w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-30"></div>
@@ -76,12 +121,27 @@ function Home() {
 
           {/* CATEGORY PILLS */}
           <div className="flex gap-3 flex-wrap">
-            {["Pizza", "Dessert", "Noodle", "Cocktails", "Salad"].map((item) => (
+            {["Recommended", "Saved", "Favorites"].map((item) => (
+
               <button
                 key={item}
-                onClick={() => setActive(item)}
+                onClick={() => {
+                  setActive(item);
+
+                  if (item === "Recommended") {
+                    setDisplayRecipes(getRandom(generated, 6));
+                  }
+
+                  if (item === "Saved") {
+                    setDisplayRecipes(saved);
+                  }
+
+                  if (item === "Favorites") {
+                    setDisplayRecipes(favorites);
+                  }
+                }}
                 className={`
-                  px-4 py-2 rounded-full text-sm transition
+                  px-6 h-10 rounded-full text-sm transition font-medium 
                   ${active === item
                     ? "bg-black text-white dark:bg-white dark:text-black"
                     : "bg-white dark:bg-gray-800 border dark:border-gray-700 text-black dark:text-white"
@@ -91,7 +151,29 @@ function Home() {
                 {item}
               </button>
             ))}
+            <div className="grid grid-cols-3 gap-8 mt-8  w-full">
+              
+              {displayRecipes.length > 0 ? (
+                displayRecipes.map((recipe, i) => (
+                  <RecipeCard
+                    key={i}
+                    recipe={recipe}
+                    onClick={(r) =>
+                      navigate(`/recipe/${r._id}`, { state: r })
+                    }
+                  />
+                ))
+              ) : (
+                <p className="mt-30 text-gray-500">
+                  No recipes found
+                </p>
+              )}
+            </div>
           </div>
+
+          <h2 className="text-2xl font-semibold mb-6 mt-10 text-black dark:text-white">
+            Recent
+          </h2>
 
         </div>
 

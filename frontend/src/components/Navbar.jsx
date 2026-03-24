@@ -40,14 +40,6 @@ function Navbar() {
           )}
         </button>
 
-        {/* PREMIUM BUTTON */}
-        <button className="
-          px-4 py-2 bg-yellow-400 rounded-full font-medium
-          shadow-sm hover:scale-105 transition
-        ">
-          Premium
-        </button>
-
       </div>
     </div>
   );

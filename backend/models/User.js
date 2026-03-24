@@ -17,7 +17,21 @@ const userSchema = new mongoose.Schema({
   onboardingCompleted: {
     type: Boolean,
     default: false
-  }
+  },
+
+  // 🔥 ADD THESE
+
+  recipesGenerated: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ],
+
+  savedRecipes: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ],
+
+  favorites: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }
+  ]
 
 }, { timestamps: true });
 

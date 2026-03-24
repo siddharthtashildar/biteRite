@@ -19,7 +19,7 @@ function Sidebar() {
   return (
     <div
       className={`
-        h-screen flex flex-col justify-between p-4
+         h-screen flex flex-col justify-between p-4
         transition-all duration-300
         ${collapsed ? "w-20" : "w-64"}
         

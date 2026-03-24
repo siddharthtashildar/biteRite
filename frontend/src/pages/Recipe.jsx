@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { useUser } from "@clerk/clerk-react";
 
 function Recipe() {
@@ -36,13 +36,19 @@ function Recipe() {
   // 🔥 SAVE API
   const handleSave = async () => {
     try {
-      await fetch(`http://localhost:5000/api/users/save/${recipe._id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkId: user.id })
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/users/save/${recipe._id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clerkId: user.id })
+        }
+      );
 
-      setSaved(true);
+      const data = await res.json();
+
+      setSaved(data.saved); // 🔥 dynamic toggle
+
     } catch (err) {
       console.error(err);
     }
@@ -51,18 +57,47 @@ function Recipe() {
   // 🔥 FAVORITE API  
   const handleFav = async () => {
     try {
-      await fetch(`http://localhost:5000/api/users/favorite/${recipe._id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkId: user.id })
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/users/favorite/${recipe._id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clerkId: user.id })
+        }
+      );
 
-      setFav(true);
+      const data = await res.json();
+
+      setFav(data.favorite); // 🔥 dynamic toggle
+
     } catch (err) {
       console.error(err);
     }
   };
 
+  useEffect(() => {
+    if (!user || !recipe?._id) return;
+
+    const checkStatus = async () => {
+      const res = await fetch(
+        `http://localhost:5000/api/users/recipes/${user.id}`
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSaved(
+          data.saved.some(r => r._id === recipe._id)
+        );
+
+        setFav(
+          data.favorites.some(r => r._id === recipe._id)
+        );
+      }
+    };
+
+    checkStatus();
+  }, [user, recipe]);
   return (
     <div className="flex min-h-screen bg-[#f6f4ef] dark:bg-gray-900">
 
@@ -94,10 +129,10 @@ function Recipe() {
           {/* DIET TAG */}
           <div className="absolute top-5 right-5">
             <span className={`px-3 py-1 text-xs rounded-full font-medium ${dietType === "veg"
-                ? "bg-green-500 text-white"
-                : dietType === "vegan"
-                  ? "bg-emerald-500 text-white"
-                  : "bg-red-500 text-white"
+              ? "bg-green-500 text-white"
+              : dietType === "vegan"
+                ? "bg-emerald-500 text-white"
+                : "bg-red-500 text-white"
               }`}>
               {dietType}
             </span>
@@ -113,8 +148,8 @@ function Recipe() {
             <button
               onClick={handleFav}
               className={`px-4 py-2 rounded-xl text-sm transition ${fav
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                ? "bg-red-500 text-white"
+                : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                 }`}
             >
               ❤️ Favorite
@@ -123,8 +158,8 @@ function Recipe() {
             <button
               onClick={handleSave}
               className={`px-4 py-2 rounded-xl text-sm transition ${saved
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                ? "bg-green-500 text-white"
+                : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                 }`}
             >
               💾 Save
