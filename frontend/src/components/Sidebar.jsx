@@ -8,7 +8,8 @@ import {
   FiUser,
   FiMenu,
   FiCheckCircle,
-  FiBookmark
+  FiBookmark,
+  FiClock
 } from "react-icons/fi";
 
 function Sidebar() {
@@ -117,6 +118,14 @@ function Sidebar() {
             collapsed={collapsed}
             onClick={() => navigate("/saved-recipes")}
             active={location.pathname === "/saved-recipes"}
+          />
+
+          <NavItem
+            icon={<FiClock />}
+            label="Pending Verification"
+            collapsed={collapsed}
+            onClick={() => navigate("/pending-verification")}
+            active={location.pathname === "/pending-verification"}
           />
 
           <NavItem

@@ -19,6 +19,7 @@ import DieticianDashboard from "./pages/DieticianDashboard";
 import Favorites from "./pages/Favorites";
 import VerifiedRecipes from "./pages/VerifiedRecipes";
 import SavedRecipes from "./pages/SavedRecipes";
+import PendingVerification from "./pages/PendingVerification";
 
 function App() {
   const { user, isLoaded } = useUser();
@@ -106,6 +107,7 @@ function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/verified-recipes" element={<VerifiedRecipes />} />
               <Route path="/saved-recipes" element={<SavedRecipes />} />
+              <Route path="/pending-verification" element={<PendingVerification />} />
               
               {/* Dietician Dashboard - only accessible by dieticians */}
               {userRole === "dietician" && (

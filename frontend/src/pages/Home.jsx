@@ -18,6 +18,7 @@ function Home() {
   const [displayRecipes, setDisplayRecipes] = useState([]);
   const [recentRecipes, setRecentRecipes] = useState([]);
   const [exploreRecipes, setExploreRecipes] = useState([]);
+  const [pendingRecipes, setPendingRecipes] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -34,6 +35,10 @@ function Home() {
           setGenerated(data.generated || []);
           setSaved(data.saved || []);
           setFavorites(data.favorites || []);
+
+          // Filter pending verification recipes
+          const pending = (data.generated || []).filter(recipe => recipe.pendingVerification);
+          setPendingRecipes(pending);
 
           // 🔥 default = recommended
           setDisplayRecipes(getRandom(data.generated, 6));
@@ -167,7 +172,7 @@ function Home() {
 
           {/* CATEGORY PILLS */}
           <div className="flex gap-3 flex-wrap">
-            {["Recommended", "Saved", "Favorites", "Verified"].map((item) => (
+            {["Recommended", "Saved", "Favorites", "Verified", "Pending Verification"].map((item) => (
 
               <button
                 key={item}
@@ -188,6 +193,10 @@ function Home() {
 
                   if (item === "Verified") {
                     setDisplayRecipes(exploreRecipes);
+                  }
+
+                  if (item === "Pending Verification") {
+                    setDisplayRecipes(pendingRecipes);
                   }
                 }}
                 className={`
