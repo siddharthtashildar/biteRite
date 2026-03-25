@@ -11,7 +11,7 @@ function Home() {
   const [active, setActive] = useState("Recommended");
 
   const { user } = useUser();
-
+  const username = user?.firstName || "User";
   const [generated, setGenerated] = useState([]);
   const [saved, setSaved] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -108,22 +108,23 @@ function Home() {
           <div className="max-w-xl relative z-10">
 
             <p className="text-sm text-gray-400 mb-3 tracking-wide">
-              More than 10,000 recipes
+              Explore more than 10,000 recipes...
             </p>
 
-            <h1 className="text-5xl font-semibold leading-tight mb-8 text-black dark:text-white">
-              Generate Best Recipes <br />
-              for your Meals
+            <h1 className="text-5xl font-semibold leading-tight mb-8 text-black dark:text-white border-green-300 border-l-4 pl-6">
+              You live to eat <br />
+              not eat to live. <br />
             </h1>
 
             <button
               onClick={() => navigate("/generate")}
               className="
-                bg-green-500 text-white px-8 py-3 rounded-full text-sm font-medium 
-                shadow-lg hover:scale-105 hover:bg-green-600 transition
+                bg-green-100 text-green-700 px-8 py-3 rounded-full text-sm font-medium 
+  border border-green-500
+  shadow-lg hover:scale-105 hover:bg-green-200 transition
               "
             >
-              Generate →
+              Generate Recipes →
             </button>
           </div>
 
@@ -140,11 +141,11 @@ function Home() {
         <div className="mt-10">
 
           <h2 className="text-2xl font-semibold mb-6 text-black dark:text-white">
-            Explore Categories
+            🥗 Explore Recipes
           </h2>
 
           {/* CATEGORY PILLS */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 flex-wrap ">
             {["Recommended", "Saved", "Favorites"].map((item) => (
 
               <button
@@ -167,8 +168,8 @@ function Home() {
                 className={`
                   px-6 h-10 rounded-full text-sm transition font-medium 
                   ${active === item
-                    ? "bg-black text-white dark:bg-white dark:text-black"
-                    : "bg-white dark:bg-gray-800 border dark:border-gray-700 text-black dark:text-white"
+                    ? "bg-orange-100 text-orange-700 px-6 py-2 rounded-full text-sm font-medium border border-orange-500 shadow-lg hover:scale-105 hover:bg-orange-200 transition"
+                    : "bg-white dark:bg-gray-800 border dark:border-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105 shadow-lg"
                   }
                 `}
               >
