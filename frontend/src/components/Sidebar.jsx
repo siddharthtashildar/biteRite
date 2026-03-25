@@ -21,6 +21,28 @@ function Sidebar() {
   const { user } = useUser();
 
   useEffect(() => {
+    if (!user) return;
+
+    const fetchUserRole = async () => {
+      try {
+        console.log("🔍 Fetching user role for:", user.id);
+        const res = await fetch(
+          `http://localhost:5000/api/users/${user.id}`
+        );
+        const data = await res.json();
+        console.log("👥 User data:", data);
+        setUserRole(data.role || "user");
+        console.log("✅ User role set to:", data.role || "user");
+      } catch (err) {
+        console.error("❌ Error fetching user role:", err);
+        setUserRole("user");
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
+
+  useEffect(() => {
     // Update body class for sidebar state
     if (collapsed) {
       document.body.classList.add('sidebar-collapsed');
