@@ -131,7 +131,7 @@ function CommunityFeed() {
       <div className="flex-1 p-6 md:p-10">
         <Navbar />
         
-        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mt-8 mb-8 border border-gray-100 dark:border-gray-700">
+        <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mt-8 mb-8 border border-gray-100 dark:border-gray-700">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Community Forum</h2>
 
           {error && (
