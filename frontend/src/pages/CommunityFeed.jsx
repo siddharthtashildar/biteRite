@@ -202,11 +202,11 @@ function CommunityFeed() {
                   </div>
 
                   {post.imageUrl && (
-                    <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 dark:border-gray-700">
+                    <div className="mb-4 overflow-hidden rounded-xl dark:border-gray-700">
                       <img
                         src={`${API_HOST}${post.imageUrl.startsWith('/') ? '' : '/'}${post.imageUrl}`}
                         alt="Post content"
-                        className="w-full max-h-80 object-cover"
+                        className="w-auto max-w-sm max-h-48 object-contain"
                         onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Image+Not+Found'; }} 
                       />
                     </div>
