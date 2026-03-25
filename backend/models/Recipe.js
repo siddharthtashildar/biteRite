@@ -29,9 +29,42 @@ const RecipeSchema = new mongoose.Schema({
 
   createdBy: String, // 🔥 needed for user mapping
 
-  verifiedByDietitian: {
+  // Verification fields
+  pendingVerification: {
     type: Boolean,
     default: false
+  },
+
+  verifiedByDietician: {
+    type: Boolean,
+    default: false
+  },
+
+  dieticianVerifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+  },
+
+  verificationDate: {
+    type: Date,
+    default: null
+  },
+
+  rejectionReason: {
+    type: String,
+    default: null
+  },
+
+  dieticianRejectedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+  },
+
+  rejectionDate: {
+    type: Date,
+    default: null
   }
 
 }, { timestamps: true });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -6,21 +6,33 @@ import {
   FiHeart,
   FiUsers,
   FiUser,
-  FiMenu
+  FiMenu,
+  FiCheckCircle,
+  FiBookmark
 } from "react-icons/fi";
 
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [userRole, setUserRole] = useState("user");
 
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useUser();
 
+  useEffect(() => {
+    // Update body class for sidebar state
+    if (collapsed) {
+      document.body.classList.add('sidebar-collapsed');
+    } else {
+      document.body.classList.remove('sidebar-collapsed');
+    }
+  }, [collapsed]);
+
   return (
     <div
       className={`
-         h-screen flex flex-col justify-between p-4
-        transition-all duration-300
+         fixed top-0 left-0 h-screen flex flex-col justify-between p-4
+        transition-all duration-300 z-50
         ${collapsed ? "w-20" : "w-64"}
         
         bg-white dark:bg-gray-900
@@ -87,6 +99,24 @@ function Sidebar() {
             icon={<FiHeart />}
             label="Favorites"
             collapsed={collapsed}
+            onClick={() => navigate("/favorites")}
+            active={location.pathname === "/favorites"}
+          />
+
+          <NavItem
+            icon={<FiCheckCircle />}
+            label="Verified Recipes"
+            collapsed={collapsed}
+            onClick={() => navigate("/verified-recipes")}
+            active={location.pathname === "/verified-recipes"}
+          />
+
+          <NavItem
+            icon={<FiBookmark />}
+            label="Saved Recipes"
+            collapsed={collapsed}
+            onClick={() => navigate("/saved-recipes")}
+            active={location.pathname === "/saved-recipes"}
           />
 
           <NavItem
@@ -104,6 +134,16 @@ function Sidebar() {
             onClick={() => navigate("/profile")}
             active={location.pathname === "/profile"}
           />
+
+          {userRole === "dietician" && (
+            <NavItem
+              icon={<FiUsers />}
+              label="Verify Recipes"
+              collapsed={collapsed}
+              onClick={() => navigate("/dietician-dashboard")}
+              active={location.pathname === "/dietician-dashboard"}
+            />
+          )}
 
         </nav>
       </div>

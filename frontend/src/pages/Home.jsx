@@ -17,6 +17,7 @@ function Home() {
   const [favorites, setFavorites] = useState([]);
   const [displayRecipes, setDisplayRecipes] = useState([]);
   const [recentRecipes, setRecentRecipes] = useState([]);
+  const [exploreRecipes, setExploreRecipes] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -77,6 +78,27 @@ function Home() {
     fetchRecent();
   }, [user]);
 
+  useEffect(() => {
+    const fetchExploreRecipes = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/recipes/verified`
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          setExploreRecipes(data.recipes);
+        }
+
+      } catch (err) {
+        console.error("Failed to fetch explore recipes", err);
+      }
+    };
+
+    fetchExploreRecipes();
+  }, []);
+
   return (
     <div className={`flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition`}>
 
@@ -84,7 +106,7 @@ function Home() {
       <Sidebar />
 
       {/* MAIN */}
-      <div className={`flex-1 p-10`}>
+      <div className={`flex-1 p-10 main-content`}>
 
         <Navbar />
 
@@ -145,7 +167,7 @@ function Home() {
 
           {/* CATEGORY PILLS */}
           <div className="flex gap-3 flex-wrap">
-            {["Recommended", "Saved", "Favorites"].map((item) => (
+            {["Recommended", "Saved", "Favorites", "Verified"].map((item) => (
 
               <button
                 key={item}
@@ -162,6 +184,10 @@ function Home() {
 
                   if (item === "Favorites") {
                     setDisplayRecipes(favorites);
+                  }
+
+                  if (item === "Verified") {
+                    setDisplayRecipes(exploreRecipes);
                   }
                 }}
                 className={`

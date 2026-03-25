@@ -6,6 +6,12 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: String,
 
+  role: {
+    type: String,
+    enum: ["user", "dietician"],
+    default: "user"
+  },
+
   dietType: String,
   healthConditions: [String],
   allergies: [String],

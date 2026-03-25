@@ -7,6 +7,7 @@ async function saveUserData(req, res) {
       clerkId,
       name,
       email,
+      role,
       dietType,
       healthConditions,
       allergies,
@@ -20,6 +21,7 @@ async function saveUserData(req, res) {
       {
         name,
         email,
+        role: role || "user",
         dietType,
         healthConditions,
         allergies,
