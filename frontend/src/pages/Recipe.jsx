@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useState, useEffect} from "react";
 import { useUser } from "@clerk/clerk-react";
+import { FiHeart, FiSave, FiSend, FiClock, FiCheckCircle } from "react-icons/fi";
 
 function Recipe() {
   const { state } = useLocation();
@@ -12,6 +13,8 @@ function Recipe() {
 
   const [saved, setSaved] = useState(false);
   const [fav, setFav] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   if (!recipe) return <p>No recipe found</p>;
 
@@ -75,6 +78,37 @@ function Recipe() {
     }
   };
 
+  // 🔥 SEND FOR VERIFICATION
+  const handleSendForVerification = async () => {
+    try {
+      console.log("📤 Sending recipe for verification. RecipeId:", recipe._id, "ClerkId:", user.id);
+
+      const res = await fetch(
+        `http://localhost:5000/api/recipes/${recipe._id}/send-for-verification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clerkId: user.id })
+        }
+      );
+
+      const data = await res.json();
+
+      console.log("Response:", data);
+
+      if (data.success) {
+        setPendingVerification(true);
+        alert("✅ Recipe sent for verification!");
+      } else {
+        alert("❌ Error: " + (data.message || "Failed to send recipe for verification"));
+      }
+
+    } catch (err) {
+      console.error("❌ Error sending for verification:", err);
+      alert("❌ Error: " + err.message);
+    }
+  };
+
   useEffect(() => {
     if (!user || !recipe?._id) return;
 
@@ -96,6 +130,10 @@ function Recipe() {
       }
     };
 
+    // Check verification status
+    setPendingVerification(recipe?.pendingVerification || false);
+    setIsVerified(recipe?.verifiedByDietician || false);
+
     checkStatus();
   }, [user, recipe]);
   return (
@@ -103,7 +141,7 @@ function Recipe() {
 
       <Sidebar />
 
-      <div className="flex-1 p-10">
+      <div className="flex-1 p-10 main-content">
         <Navbar />
 
         {/* 🔥 HERO IMAGE */}
@@ -127,7 +165,12 @@ function Recipe() {
           </div>
 
           {/* DIET TAG */}
-          <div className="absolute top-5 right-5">
+          <div className="absolute top-5 right-5 flex gap-2">
+            {isVerified && (
+              <span className="px-3 py-1 text-xs rounded-full font-medium bg-blue-500 text-white flex items-center gap-1">
+                <FiCheckCircle className="w-3 h-3" /> Verified by Dietician
+              </span>
+            )}
             <span className={`px-3 py-1 text-xs rounded-full font-medium ${dietType === "veg"
               ? "bg-green-500 text-white"
               : dietType === "vegan"
@@ -143,16 +186,16 @@ function Recipe() {
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-md">
 
           {/* ACTION BUTTONS */}
-          <div className="flex justify-end gap-3 mb-6">
+          <div className="flex justify-end gap-3 mb-6 flex-wrap">
 
             <button
               onClick={handleFav}
               className={`px-4 py-2 rounded-xl text-sm transition ${fav
                 ? "bg-red-500 text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
-                }`}
+                } flex items-center gap-2`}
             >
-              ❤️ Favorite
+              <FiHeart className="w-4 h-4" /> Favorite
             </button>
 
             <button
@@ -160,10 +203,37 @@ function Recipe() {
               className={`px-4 py-2 rounded-xl text-sm transition ${saved
                 ? "bg-green-500 text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
-                }`}
+                } flex items-center gap-2`}
             >
-              💾 Save
+              <FiSave className="w-4 h-4" /> Save
             </button>
+
+            {!isVerified && !pendingVerification && (
+              <button
+                onClick={handleSendForVerification}
+                className="px-4 py-2 rounded-xl text-sm transition bg-blue-500 text-white hover:bg-blue-600 flex items-center gap-2"
+              >
+                <FiSend className="w-4 h-4" /> Send for Verification
+              </button>
+            )}
+
+            {pendingVerification && !isVerified && (
+              <button
+                disabled
+                className="px-4 py-2 rounded-xl text-sm transition bg-yellow-500 text-white opacity-75 cursor-not-allowed flex items-center gap-2"
+              >
+                <FiClock className="w-4 h-4" /> Pending Verification
+              </button>
+            )}
+
+            {isVerified && (
+              <button
+                disabled
+                className="px-4 py-2 rounded-xl text-sm transition bg-blue-500 text-white opacity-75 cursor-not-allowed flex items-center gap-2"
+              >
+                <FiCheckCircle className="w-4 h-4" /> Verified
+              </button>
+            )}
 
           </div>
 
@@ -196,6 +266,25 @@ function Recipe() {
 
             </div>
           </div>
+
+          {/* VERIFICATION INFO */}
+          {isVerified && recipe.dieticianVerifiedBy && (
+            <div className="mb-10">
+              <h2 className="font-semibold mb-4 text-black dark:text-white">
+                Verification Details
+              </h2>
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl">
+                <p className="text-sm text-green-700 dark:text-green-300 flex items-center gap-2">
+                  <FiCheckCircle className="w-4 h-4" /> Verified by: <span className="font-medium">{recipe.dieticianVerifiedBy.name || "Dietician"}</span>
+                </p>
+                {recipe.verificationDate && (
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                    Verified on: {new Date(recipe.verificationDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 📦 CONTENT */}
           <div className="grid grid-cols-3 gap-8">

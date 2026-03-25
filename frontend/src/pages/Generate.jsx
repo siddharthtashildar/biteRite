@@ -63,7 +63,7 @@ function Generate() {
 
       <Sidebar />
 
-      <div className="flex-1 p-10">
+      <div className="flex-1 p-10 main-content">
 
         <Navbar />
 

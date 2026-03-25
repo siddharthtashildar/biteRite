@@ -12,6 +12,7 @@ function Onboarding() {
   const [customInput, setCustomInput] = useState("");
 
   const [form, setForm] = useState({
+    role: "",
     dietType: "",
     healthConditions: [],
     allergies: [],
@@ -34,28 +35,33 @@ function Onboarding() {
 
  const handleSubmit = async () => {
   try {
+    const payload = {
+      clerkId: user.id,
+      name: user.fullName,
+      email: user.primaryEmailAddress.emailAddress,
+      ...form
+    };
+
+    console.log("📝 Submitting onboarding form:", payload);
+
     const res = await fetch("http://localhost:5000/api/users/onboarding", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        clerkId: user.id,
-        name: user.fullName,
-        email: user.primaryEmailAddress.emailAddress,
-        ...form
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await res.json();
 
-    console.log("Onboarding response:", data);
+    console.log("✅ Onboarding response:", data);
 
     // 🔥 FORCE RELOAD APP STATE
     window.location.href = "/";
 
   } catch (err) {
-    console.error("Onboarding failed:", err);
+    console.error("❌ Onboarding failed:", err);
+    alert("Error: " + err.message);
   }
 };
   const cardAnimation = {
@@ -74,15 +80,42 @@ function Onboarding() {
         <div className="w-full bg-gray-200 h-2 rounded mb-6">
           <div
             className="bg-green-500 h-2 rounded"
-            style={{ width: `${(step / 5) * 100}%` }}
+            style={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
 
         <AnimatePresence mode="wait">
 
-          {/* STEP 1 */}
+          {/* STEP 1 - ROLE SELECTION */}
           {step === 1 && (
             <motion.div key="step1" {...cardAnimation}>
+              <h2 className="text-xl font-bold mb-4">What's Your Role?</h2>
+
+              <button
+                onClick={() => {
+                  setForm({ ...form, role: "user" });
+                  next();
+                }}
+                className="w-full mb-3 p-3 rounded-lg border hover:bg-green-100"
+              >
+                👤 Regular User
+              </button>
+
+              <button
+                onClick={() => {
+                  setForm({ ...form, role: "dietician" });
+                  next();
+                }}
+                className="w-full mb-3 p-3 rounded-lg border hover:bg-blue-100"
+              >
+                🏥 Dietician
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 2 - DIET TYPE */}
+          {step === 2 && (
+            <motion.div key="step2" {...cardAnimation}>
               <h2 className="text-xl font-bold mb-4">Diet Type</h2>
 
               {["Veg", "Non-Veg", "Vegan"].map(item => (
@@ -129,9 +162,9 @@ function Onboarding() {
             </motion.div>
           )}
 
-          {/* STEP 2 */}
-          {step === 2 && (
-            <motion.div key="step2" {...cardAnimation}>
+          {/* STEP 3 - HEALTH CONDITIONS */}
+          {step === 3 && (
+            <motion.div key="step3" {...cardAnimation}>
               <h2 className="text-xl font-bold mb-4">Health Conditions</h2>
 
               {["Diabetes", "BP", "Cholesterol"].map(item => (
@@ -159,9 +192,9 @@ function Onboarding() {
             </motion.div>
           )}
 
-          {/* STEP 3 */}
-          {step === 3 && (
-            <motion.div key="step3" {...cardAnimation}>
+          {/* STEP 4 - ALLERGIES */}
+          {step === 4 && (
+            <motion.div key="step4" {...cardAnimation}>
               <h2 className="text-xl font-bold mb-4">Allergies</h2>
 
               {["Nuts", "Dairy", "Gluten"].map(item => (
@@ -189,9 +222,9 @@ function Onboarding() {
             </motion.div>
           )}
 
-          {/* STEP 4 */}
-          {step === 4 && (
-            <motion.div key="step4" {...cardAnimation}>
+          {/* STEP 5 - USER INFO */}
+          {step === 5 && (
+            <motion.div key="step5" {...cardAnimation}>
               <h2 className="text-xl font-bold mb-4">Your Info</h2>
 
               <input
@@ -222,9 +255,9 @@ function Onboarding() {
             </motion.div>
           )}
 
-          {/* STEP 5 */}
-          {step === 5 && (
-            <motion.div key="step5" {...cardAnimation}>
+          {/* STEP 6 - GOAL */}
+          {step === 6 && (
+            <motion.div key="step6" {...cardAnimation}>
               <h2 className="text-xl font-bold mb-4">Goal</h2>
 
               {["Weight Loss", "Muscle Gain", "Maintain"].map(item => (

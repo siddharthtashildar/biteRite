@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useUser } from "@clerk/clerk-react";
+import { FiHeart } from "react-icons/fi";
 
 const API_HOST = "http://localhost:5000";
 const API_BASE = `${API_HOST}/api/forum`;
@@ -128,7 +129,7 @@ function CommunityFeed() {
   return (
     <div className="flex min-h-screen bg-[#f6f4ef] dark:bg-gray-900 transition-colors duration-300">
       <Sidebar />
-      <div className="flex-1 p-6 md:p-10">
+      <div className="flex-1 p-6 md:p-10 main-content">
         <Navbar />
         
         <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mt-8 mb-8 border border-gray-100 dark:border-gray-700">
@@ -202,11 +203,11 @@ function CommunityFeed() {
                   </div>
 
                   {post.imageUrl && (
-                    <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 dark:border-gray-700">
+                    <div className="mb-4 overflow-hidden rounded-xl dark:border-gray-700">
                       <img
                         src={`${API_HOST}${post.imageUrl.startsWith('/') ? '' : '/'}${post.imageUrl}`}
                         alt="Post content"
-                        className="w-full max-h-80 object-cover"
+                        className="w-auto max-w-sm max-h-48 object-contain"
                         onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Image+Not+Found'; }} 
                       />
                     </div>
@@ -233,7 +234,7 @@ function CommunityFeed() {
                         post.likes?.includes(user?.id) ? "text-red-500" : "text-gray-400 hover:text-red-400"
                       }`}
                     >
-                      <span className="text-lg">{post.likes?.includes(user?.id) ? "❤️" : "🤍"}</span>
+                      <FiHeart className={`w-4 h-4 ${post.likes?.includes(user?.id) ? "fill-current" : ""}`} />
                       <span>{post.likes?.length || 0}</span>
                     </button>
 

@@ -107,7 +107,7 @@ if (!userData) return <p className="text-center mt-10">Loading...</p>;
 return ( <div className="flex min-h-screen bg-gray-50 dark:bg-black transition"> <Sidebar />
 
 
-  <div className="flex-1">
+  <div className="flex-1 main-content">
     <Navbar />
 
     <div className="p-6 max-w-4xl mx-auto space-y-6">

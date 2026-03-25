@@ -15,12 +15,18 @@ import Generate from "./pages/Generate";
 import Results from "./pages/Results";
 import Recipe from "./pages/Recipe";
 import CommunityFeed from "./pages/CommunityFeed";
+import DieticianDashboard from "./pages/DieticianDashboard";
+import Favorites from "./pages/Favorites";
+import VerifiedRecipes from "./pages/VerifiedRecipes";
+import SavedRecipes from "./pages/SavedRecipes";
+import PendingVerification from "./pages/PendingVerification";
 
 function App() {
   const { user, isLoaded } = useUser();
 
   const [loading, setLoading] = useState(true);
   const [onboardingDone, setOnboardingDone] = useState(false);
+  const [userRole, setUserRole] = useState("user");
 
   useEffect(() => {
       document.documentElement.classList.add("dark");
@@ -53,6 +59,7 @@ function App() {
       console.log("User sync:", data);
 
       setOnboardingDone(data.onboardingCompleted || false);
+      setUserRole(data.role || "user");
 
     } catch (err) {
       console.error("Sync error:", err);
@@ -97,6 +104,15 @@ function App() {
               <Route path="/profile" element={<UserInfo />} />
               <Route path="/recipe/:id" element={<Recipe />} />
               <Route path="/CommunityFeed" element={<CommunityFeed />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/verified-recipes" element={<VerifiedRecipes />} />
+              <Route path="/saved-recipes" element={<SavedRecipes />} />
+              <Route path="/pending-verification" element={<PendingVerification />} />
+              
+              {/* Dietician Dashboard - only accessible by dieticians */}
+              {userRole === "dietician" && (
+                <Route path="/dietician-dashboard" element={<DieticianDashboard />} />
+              )}
 
               {/* fallback */}
               <Route path="*" element={<Navigate to="/" />} />

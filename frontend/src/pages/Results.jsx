@@ -38,7 +38,7 @@ function Results() {
 
       <Sidebar />
 
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 main-content">
 
         {!recipe ? (
           <p>Generating...</p>
