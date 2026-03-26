@@ -1,6 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
+import CreateRecipeForm from "../components/CreateRecipeForm";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
@@ -19,6 +20,7 @@ function Home() {
   const [recentRecipes, setRecentRecipes] = useState([]);
   const [exploreRecipes, setExploreRecipes] = useState([]);
   const [pendingRecipes, setPendingRecipes] = useState([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -113,6 +115,20 @@ function Home() {
       {/* MAIN */}
       <div className={`flex-1 p-10 main-content`}>
 
+        {/* CREATE RECIPE BUTTON - TOP LEFT */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="
+              bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium 
+              border border-green-500 hover:bg-green-200 transition flex items-center gap-2
+            "
+          >
+            <span>+</span>
+            Create Your Own Recipe
+          </button>
+        </div>
+
         <Navbar />
 
         {/* HERO */}
@@ -172,11 +188,8 @@ function Home() {
           </h2>
 
           {/* CATEGORY PILLS */}
-          <div className="flex gap-3 flex-wrap ">
-            {["Recommended", "Saved", "Favorites"].map((item) => (
           <div className="flex gap-3 flex-wrap">
             {["Recommended", "Saved", "Favorites", "Verified", "Pending Verification"].map((item) => (
-
               <button
                 key={item}
                 onClick={() => {
@@ -213,24 +226,24 @@ function Home() {
                 {item}
               </button>
             ))}
-            <div className="grid grid-cols-3 gap-8 mt-8  w-full">
+          </div>
 
-              {displayRecipes.length > 0 ? (
-                displayRecipes.map((recipe, i) => (
-                  <RecipeCard
-                    key={i}
-                    recipe={recipe}
-                    onClick={(r) =>
-                      navigate(`/recipe/${r._id}`, { state: r })
-                    }
-                  />
-                ))
-              ) : (
-                <p className="mt-30 text-gray-500">
-                  No recipes found
-                </p>
-              )}
-            </div>
+          <div className="grid grid-cols-3 gap-8 mt-8 w-full">
+            {displayRecipes.length > 0 ? (
+              displayRecipes.map((recipe, i) => (
+                <RecipeCard
+                  key={i}
+                  recipe={recipe}
+                  onClick={(r) =>
+                    navigate(`/recipe/${r._id}`, { state: r })
+                  }
+                />
+              ))
+            ) : (
+              <p className="mt-30 text-gray-500">
+                No recipes found
+              </p>
+            )}
           </div>
 
           <h2 className="text-2xl font-semibold mb-6 mt-10 text-black dark:text-white">
@@ -262,6 +275,18 @@ function Home() {
         </div>
 
       </div>
+
+      {/* CREATE RECIPE FORM MODAL */}
+      {showCreateForm && (
+        <CreateRecipeForm
+          onClose={() => setShowCreateForm(false)}
+          onSuccess={() => {
+            // Refresh recipes after creation
+            window.location.reload();
+          }}
+        />
+      )}
+
     </div>
   );
 }

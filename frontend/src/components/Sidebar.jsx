@@ -9,7 +9,8 @@ import {
   FiMenu,
   FiCheckCircle,
   FiBookmark,
-  FiClock
+  FiClock,
+  FiPlus
 } from "react-icons/fi";
 
 function Sidebar() {
@@ -140,6 +141,14 @@ function Sidebar() {
             collapsed={collapsed}
             onClick={() => navigate("/saved-recipes")}
             active={location.pathname === "/saved-recipes"}
+          />
+
+          <NavItem
+            icon={<FiPlus />}
+            label="Your Recipes"
+            collapsed={collapsed}
+            onClick={() => navigate("/your-recipes")}
+            active={location.pathname === "/your-recipes"}
           />
 
           <NavItem

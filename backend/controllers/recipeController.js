@@ -41,7 +41,9 @@ function transformRecipe(r, image, clerkId) {
 
     healthTags: r.healthTags || [],
 
-    createdBy: clerkId
+    createdBy: clerkId,
+
+    isUserCreated: false
   };
 }
 
@@ -291,10 +293,125 @@ async function rejectRecipe(req, res) {
   }
 }
 
+// 🔥 CREATE USER RECIPE
+async function createRecipeController(req, res) {
+  try {
+    const {
+      title,
+      image,
+      ingredients,
+      instructions,
+      cookingTime,
+      dietType,
+      nutrition,
+      healthTags,
+      clerkId
+    } = req.body;
+
+    // Validate required fields
+    if (!title || !ingredients || !instructions || !clerkId) {
+      return res.status(400).json({
+        success: false,
+        message: "Title, ingredients, instructions, and clerkId are required"
+      });
+    }
+
+    // Ensure ingredients and instructions are not empty
+    const ingredientsArray = Array.isArray(ingredients) ? ingredients.filter(i => i.trim()) : ingredients.split('\n').filter(i => i.trim());
+    const instructionsArray = Array.isArray(instructions) ? instructions.filter(i => i.trim()) : instructions.split('\n').filter(i => i.trim());
+
+    if (ingredientsArray.length === 0 || instructionsArray.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one ingredient and one instruction are required"
+      });
+    }
+
+    // Create the recipe with pending verification
+    const newRecipe = await Recipe.create({
+      title,
+      image: image || "https://via.placeholder.com/300", // Use provided image or default
+      ingredients: ingredientsArray,
+      instructions: instructionsArray,
+      cookingTime: parseInt(cookingTime) || 30,
+      dietType: normalizeDiet(dietType),
+      nutrition: {
+        calories: parseInt(nutrition?.calories) || 0,
+        protein: parseInt(nutrition?.protein) || 0,
+        carbs: parseInt(nutrition?.carbs) || 0,
+        fat: parseInt(nutrition?.fat) || 0
+      },
+      healthTags: Array.isArray(healthTags) ? healthTags : healthTags ? healthTags.split(',').map(t => t.trim()) : [],
+      createdBy: clerkId,
+      pendingVerification: true, // Automatically send for verification
+      isUserCreated: true
+    });
+
+    // Update user's generated recipes
+    await User.findOneAndUpdate(
+      { clerkId },
+      { $addToSet: { recipesGenerated: newRecipe._id } }
+    );
+
+    res.json({
+      success: true,
+      message: "Recipe created and sent for verification",
+      recipe: newRecipe
+    });
+
+  } catch (error) {
+    console.error("Create recipe error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create recipe"
+    });
+  }
+}
+
+// 🔥 DELETE RECIPE
+async function deleteRecipeController(req, res) {
+  try {
+    const { recipeId } = req.params;
+    const { clerkId } = req.body;
+
+    // Find the recipe
+    const recipe = await Recipe.findById(recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ success: false, message: "Recipe not found" });
+    }
+
+    // Check if user owns the recipe
+    if (recipe.createdBy !== clerkId) {
+      return res.status(403).json({ success: false, message: "You can only delete your own recipes" });
+    }
+
+    // Delete the recipe
+    await Recipe.findByIdAndDelete(recipeId);
+
+    // Remove from user's recipesGenerated
+    await User.findOneAndUpdate(
+      { clerkId },
+      { $pull: { recipesGenerated: recipeId } }
+    );
+
+    res.json({
+      success: true,
+      message: "Recipe deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Delete recipe error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 module.exports = { 
   generateRecipeController,
+  createRecipeController,
   sendForVerification,
   getPendingVerificationRecipes,
   verifyRecipe,
-  rejectRecipe
+  rejectRecipe,
+  deleteRecipeController
 };

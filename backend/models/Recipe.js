@@ -4,11 +4,11 @@ const RecipeSchema = new mongoose.Schema({
 
   title: String,
 
-  image: String, // 🔥 needed
+  image: String, 
 
   ingredients: [String],
 
-  instructions: [String], // 🔥 needed
+  instructions: [String], 
 
   cookingTime: Number,
 
@@ -27,8 +27,7 @@ const RecipeSchema = new mongoose.Schema({
 
   healthTags: [String],
 
-  createdBy: String, // 🔥 needed for user mapping
-
+  createdBy: String,
   // Verification fields
   pendingVerification: {
     type: Boolean,
@@ -48,7 +47,11 @@ const RecipeSchema = new mongoose.Schema({
 
   verificationDate: {
     type: Date,
-    default: null
+  },
+
+  isUserCreated: {
+    type: Boolean,
+    default: false
   },
 
   rejectionReason: {

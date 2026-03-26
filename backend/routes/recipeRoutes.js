@@ -2,10 +2,12 @@ const express = require("express");
 
 const { 
   generateRecipeController,
+  createRecipeController,
   sendForVerification,
   getPendingVerificationRecipes,
   verifyRecipe,
-  rejectRecipe
+  rejectRecipe,
+  deleteRecipeController
 } = require("../controllers/recipeController");
 
 const router = express.Router();
@@ -14,6 +16,10 @@ const Recipe = require("../models/Recipe");
 const User = require("../models/User");
 
 router.post("/generate", generateRecipeController);
+
+router.post("/create", createRecipeController);
+
+router.delete("/:recipeId", deleteRecipeController);
 
 router.get("/search", async (req, res) => {
   try {
