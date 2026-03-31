@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import RecipeCard from "../components/RecipeCard";
 import CreateRecipeForm from "../components/CreateRecipeForm";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 
 
@@ -21,6 +21,14 @@ function Home() {
   const [exploreRecipes, setExploreRecipes] = useState([]);
   const [pendingRecipes, setPendingRecipes] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("create") === "true") {
+      setShowCreateForm(true);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     if (!user) return;
@@ -34,16 +42,18 @@ function Home() {
         const data = await res.json();
 
         if (data.success) {
-          setGenerated(data.generated || []);
+          const allGenerated = data.generated || [];
+          setGenerated(allGenerated);
           setSaved(data.saved || []);
           setFavorites(data.favorites || []);
 
-          // Filter pending verification recipes
-          const pending = (data.generated || []).filter(recipe => recipe.pendingVerification);
+          // Filter pending verification recipes from user-generated pool
+          const pending = allGenerated.filter(recipe => recipe.pendingVerification);
           setPendingRecipes(pending);
 
-          // 🔥 default = recommended
-          setDisplayRecipes(getRandom(data.generated, 6));
+          // 🔥 default = recommended (fallback to verified explore if user has no generated recipes)
+          const base = allGenerated.length > 0 ? allGenerated : (exploreRecipes.length > 0 ? exploreRecipes : []);
+          setDisplayRecipes(getRandom(base, 6));
         }
 
       } catch (err) {
@@ -106,6 +116,14 @@ function Home() {
     fetchExploreRecipes();
   }, []);
 
+  useEffect(() => {
+    if (active !== "Recommended") return;
+    if (generated.length > 0) return;
+    if (exploreRecipes.length === 0) return;
+
+    setDisplayRecipes(getRandom(exploreRecipes, 6));
+  }, [active, generated, exploreRecipes]);
+
   return (
     <div className={`flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition`}>
 
@@ -115,21 +133,7 @@ function Home() {
       {/* MAIN */}
       <div className={`flex-1 p-10 main-content`}>
 
-        {/* CREATE RECIPE BUTTON - TOP LEFT */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="
-              bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium 
-              border border-green-500 hover:bg-green-200 transition flex items-center gap-2
-            "
-          >
-            <span>+</span>
-            Create Your Own Recipe
-          </button>
-        </div>
-
-        <Navbar />
+        <Navbar onCreate={() => setShowCreateForm(true)} />
 
         {/* HERO */}
         <div className={`
@@ -184,7 +188,7 @@ function Home() {
         <div className="mt-10">
 
           <h2 className="text-2xl font-semibold mb-6 text-black dark:text-white">
-            🥗 Explore Recipes
+            Explore Recipes
           </h2>
 
           {/* CATEGORY PILLS */}
@@ -196,7 +200,8 @@ function Home() {
                   setActive(item);
 
                   if (item === "Recommended") {
-                    setDisplayRecipes(getRandom(generated, 6));
+                    const base = generated.length > 0 ? generated : exploreRecipes;
+                    setDisplayRecipes(getRandom(base, 6));
                   }
 
                   if (item === "Saved") {

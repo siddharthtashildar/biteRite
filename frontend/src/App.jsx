@@ -17,9 +17,7 @@ import Recipe from "./pages/Recipe";
 import CommunityFeed from "./pages/CommunityFeed";
 import DieticianDashboard from "./pages/DieticianDashboard";
 import Favorites from "./pages/Favorites";
-import VerifiedRecipes from "./pages/VerifiedRecipes";
 import SavedRecipes from "./pages/SavedRecipes";
-import PendingVerification from "./pages/PendingVerification";
 import YourRecipes from "./pages/YourRecipes";
 
 function App() {
@@ -106,9 +104,9 @@ function App() {
               <Route path="/recipe/:id" element={<Recipe />} />
               <Route path="/CommunityFeed" element={<CommunityFeed />} />
               <Route path="/favorites" element={<Favorites />} />
-              <Route path="/verified-recipes" element={<VerifiedRecipes />} />
+              <Route path="/verified-recipes" element={<YourRecipes initialTab="Verified Recipes" />} />
               <Route path="/saved-recipes" element={<SavedRecipes />} />
-              <Route path="/pending-verification" element={<PendingVerification />} />
+              <Route path="/pending-verification" element={<YourRecipes initialTab="Pending Verification" />} />
               <Route path="/your-recipes" element={<YourRecipes />} />
               
               {/* Dietician Dashboard - only accessible by dieticians */}

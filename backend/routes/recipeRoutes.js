@@ -4,6 +4,7 @@ const {
   generateRecipeController,
   createRecipeController,
   sendForVerification,
+  getRecipeById,
   getPendingVerificationRecipes,
   verifyRecipe,
   rejectRecipe,
@@ -132,6 +133,67 @@ router.post("/:recipeId/verify", verifyRecipe);
 router.post("/:recipeId/reject", rejectRecipe);
 
 // 🔥 DEBUG: GET ALL RECIPES (for troubleshooting)
+router.get("/debug/all-recipes", async (req, res) => {
+  try {
+    const recipes = await Recipe.find({})
+      .select("title createdBy pendingVerification verifiedByDietician rejectionReason createdAt")
+      .sort({ createdAt: -1 });
+
+    console.log("📋 All recipes:", recipes.length);
+
+    // Count recipes by status
+    const stats = {
+      total: recipes.length,
+      pending: recipes.filter(r => r.pendingVerification === true).length,
+      verified: recipes.filter(r => r.verifiedByDietician === true).length,
+      rejected: recipes.filter(r => r.rejectionReason !== null && r.rejectionReason !== undefined).length
+    };
+
+    console.log("📊 Stats:", stats);
+
+    res.json({
+      success: true,
+      ...stats,
+      recipes: recipes
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 🔥 DEBUG: GET PENDING RECIPES (test the actual query)
+router.get("/debug/pending-test/:clerkId", async (req, res) => {
+  try {
+    const { clerkId } = req.params;
+
+    console.log("🔎 Testing pending recipes query for:", clerkId);
+
+    // Test query 1
+    const test1 = await Recipe.find({ pendingVerification: true });
+    console.log("Test 1 (pendingVerification: true):", test1.length);
+
+    // Test query 2
+    const test2 = await Recipe.find({ verifiedByDietician: false });
+    console.log("Test 2 (verifiedByDietician: false):", test2.length);
+
+    // Test query 3
+    const test3 = await Recipe.find({ pendingVerification: true, verifiedByDietician: false });
+    console.log("Test 3 (combined):", test3.length);
+
+    res.json({
+      success: true,
+      test1: test1.length,
+      test2: test2.length,
+      test3: test3.length,
+      recipes: test3
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 🔥 FETCH RECIPE BY ID for direct route /recipe/:id
+router.get("/:recipeId", getRecipeById);
 router.get("/debug/all-recipes", async (req, res) => {
   try {
     const recipes = await Recipe.find({})

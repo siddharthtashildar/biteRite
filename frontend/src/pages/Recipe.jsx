@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useState, useEffect} from "react";
@@ -6,16 +6,40 @@ import { useUser } from "@clerk/clerk-react";
 import { FiHeart, FiSave, FiSend, FiClock, FiCheckCircle } from "react-icons/fi";
 
 function Recipe() {
-  const { state } = useLocation();
-  const recipe = state;
+  const location = useLocation();
+  const { id } = useParams();
+  const [recipe, setRecipe] = useState(location.state || null);
+  const [loading, setLoading] = useState(!location.state);
 
   const { user } = useUser();
+
+  useEffect(() => {
+    if (recipe || !id) return;
+
+    const fetchRecipe = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/recipes/${id}`);
+        const data = await res.json();
+
+        if (data.success) {
+          setRecipe(data.recipe);
+        }
+      } catch (err) {
+        console.error("Failed to fetch recipe by ID", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [id, recipe]);
 
   const [saved, setSaved] = useState(false);
   const [fav, setFav] = useState(false);
   const [pendingVerification, setPendingVerification] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
+  if (loading) return <p>Loading recipe...</p>;
   if (!recipe) return <p>No recipe found</p>;
 
   const {

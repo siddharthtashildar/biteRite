@@ -146,6 +146,29 @@ async function sendForVerification(req, res) {
   }
 }
 
+// 🔥 GET SINGLE RECIPE BY ID (for direct route sharing / browser refresh)
+async function getRecipeById(req, res) {
+  try {
+    const { recipeId } = req.params;
+    const recipe = await Recipe.findById(recipeId).populate("dieticianVerifiedBy", "name email");
+
+    if (!recipe) {
+      return res.status(404).json({ success: false, message: "Recipe not found" });
+    }
+
+    const creator = await User.findOne({ clerkId: recipe.createdBy });
+    const recipeWithCreator = {
+      ...recipe.toObject(),
+      creatorInfo: creator ? { name: creator.name, email: creator.email } : { name: "Unknown", email: "" }
+    };
+
+    res.json({ success: true, recipe: recipeWithCreator });
+  } catch (error) {
+    console.error("Get recipe by ID error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 // 🔥 GET PENDING VERIFICATION RECIPES (for dieticians)
 async function getPendingVerificationRecipes(req, res) {
   try {
@@ -410,6 +433,7 @@ module.exports = {
   generateRecipeController,
   createRecipeController,
   sendForVerification,
+  getRecipeById,
   getPendingVerificationRecipes,
   verifyRecipe,
   rejectRecipe,

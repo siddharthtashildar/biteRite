@@ -128,14 +128,6 @@ function Sidebar() {
           />
 
           <NavItem
-            icon={<FiCheckCircle />}
-            label="Verified Recipes"
-            collapsed={collapsed}
-            onClick={() => navigate("/verified-recipes")}
-            active={location.pathname === "/verified-recipes"}
-          />
-
-          <NavItem
             icon={<FiBookmark />}
             label="Saved Recipes"
             collapsed={collapsed}
@@ -149,14 +141,6 @@ function Sidebar() {
             collapsed={collapsed}
             onClick={() => navigate("/your-recipes")}
             active={location.pathname === "/your-recipes"}
-          />
-
-          <NavItem
-            icon={<FiClock />}
-            label="Pending Verification"
-            collapsed={collapsed}
-            onClick={() => navigate("/pending-verification")}
-            active={location.pathname === "/pending-verification"}
           />
 
           <NavItem

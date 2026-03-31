@@ -30,12 +30,14 @@ router.get("/recipes/:clerkId", async (req, res) => {
       return res.json({ success: false });
     }
 
-    // Filter only user-created recipes
-    const userCreatedRecipes = user.recipesGenerated.filter(recipe => recipe.isUserCreated);
+    // Return all generated recipes (AI-generated + user-created)
+    const allGeneratedRecipes = user.recipesGenerated || [];
+    const userCreatedRecipes = allGeneratedRecipes.filter(recipe => recipe.isUserCreated);
 
     res.json({
       success: true,
-      generated: userCreatedRecipes,
+      generated: allGeneratedRecipes,
+      userCreated: userCreatedRecipes,
       saved: user.savedRecipes,
       favorites: user.favorites
     });
