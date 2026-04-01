@@ -46,12 +46,9 @@ function Home() {
           setGenerated(allGenerated);
           setSaved(data.saved || []);
           setFavorites(data.favorites || []);
-
-          // Filter pending verification recipes from user-generated pool
           const pending = allGenerated.filter(recipe => recipe.pendingVerification);
           setPendingRecipes(pending);
 
-          // 🔥 default = recommended (fallback to verified explore if user has no generated recipes)
           const base = allGenerated.length > 0 ? allGenerated : (exploreRecipes.length > 0 ? exploreRecipes : []);
           setDisplayRecipes(getRandom(base, 6));
         }
@@ -127,31 +124,25 @@ function Home() {
   return (
     <div className={`flex min-h-screen bg-[#f3efe9] dark:bg-gray-900 transition`}>
 
-      {/* SIDEBAR */}
       <Sidebar />
 
-      {/* MAIN */}
       <div className={`flex-1 p-10 main-content`}>
 
         <Navbar onCreate={() => setShowCreateForm(true)} />
 
-        {/* HERO */}
         <div className={`
           relative flex items-center justify-between 
           bg-white dark:bg-gray-800 
           rounded-3xl px-12 py-14 shadow-md overflow-hidden`}>
 
-          {/* 🌟 GLOW */}
           <div className="absolute right-10 top-10 w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-30"></div>
 
-          {/* 🌟 DOTS */}
           <div className="absolute right-20 top-16 grid grid-cols-6 gap-3 opacity-20">
             {Array.from({ length: 36 }).map((_, i) => (
               <div key={i} className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
             ))}
           </div>
 
-          {/* LEFT */}
           <div className="max-w-xl relative z-10">
 
             <p className="text-sm text-gray-400 mb-3 tracking-wide">
@@ -175,7 +166,6 @@ function Home() {
             </button>
           </div>
 
-          {/* RIGHT IMAGE */}
           <div className="hidden md:flex justify-center items-center relative z-10">
             <img
               src="/src/assets/food.png"
@@ -184,14 +174,12 @@ function Home() {
           </div>
         </div>
 
-        {/* SECTION BELOW HERO */}
         <div className="mt-10">
 
           <h2 className="text-2xl font-semibold mb-6 text-black dark:text-white">
             Explore Recipes
           </h2>
 
-          {/* CATEGORY PILLS */}
           <div className="flex gap-3 flex-wrap">
             {["Recommended", "Saved", "Favorites", "Verified", "Pending Verification"].map((item) => (
               <button
@@ -281,12 +269,11 @@ function Home() {
 
       </div>
 
-      {/* CREATE RECIPE FORM MODAL */}
+
       {showCreateForm && (
         <CreateRecipeForm
           onClose={() => setShowCreateForm(false)}
           onSuccess={() => {
-            // Refresh recipes after creation
             window.location.reload();
           }}
         />

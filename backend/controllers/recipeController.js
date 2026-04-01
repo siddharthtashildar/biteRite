@@ -132,7 +132,7 @@ async function sendForVerification(req, res) {
       { new: true }
     );
 
-    console.log("✅ Recipe updated. pendingVerification:", updatedRecipe.pendingVerification);
+    console.log("Recipe updated. pendingVerification:", updatedRecipe.pendingVerification);
 
     res.json({
       success: true,
@@ -146,7 +146,6 @@ async function sendForVerification(req, res) {
   }
 }
 
-// 🔥 GET SINGLE RECIPE BY ID (for direct route sharing / browser refresh)
 async function getRecipeById(req, res) {
   try {
     const { recipeId } = req.params;
