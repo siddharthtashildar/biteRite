@@ -70,21 +70,12 @@ function Favorites() {
             ))
           ) : (
             <div className="col-span-3 text-center py-20">
-              <div className="text-6xl mb-4 text-red-400">
-                <FiHeart />
-              </div>
               <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
                 No favorites yet
               </h3>
               <p className="text-gray-500 dark:text-gray-500 mb-6">
                 Start exploring recipes and add them to your favorites!
               </p>
-              <button
-                onClick={() => navigate("/")}
-                className="bg-green-500 text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-green-600 transition flex items-center gap-2"
-              >
-                Explore Recipes <FiArrowRight />
-              </button>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
-import { FiSun, FiMoon } from "react-icons/fi";
+import { FiSun, FiMoon, FiArrowLeft } from "react-icons/fi";
 
 function Navbar({ username = "Foodie", onCreate }) {
   const { dark, setDark } = useContext(ThemeContext);
@@ -59,9 +59,24 @@ function Navbar({ username = "Foodie", onCreate }) {
 
       {/* LEFT SIDE */}
       <div className="flex flex-col">
+        
 
         {/* SEARCH BAR */}
         <div className="relative">
+
+                  <button
+          onClick={() => navigate(-1)}
+          className="
+                            bg-white dark:bg-gray-800
+                text-black dark:text-white
+                border-gray-200 dark:border-gray-700 px-4 py-4 0 transition mr-5
+                shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6FAF4F]
+                rounded-full border
+
+          "
+        >
+          <FiArrowLeft />
+        </button>
           {!path.includes("profile") && !path.includes("community") && (
             <input
               type="text"
@@ -121,16 +136,33 @@ function Navbar({ username = "Foodie", onCreate }) {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+
+
+        <button
+          onClick={() => navigate("/generate")}
+          className="
+            px-3 py-2 rounded-full text-sm font-medium
+            bg-white dark:bg-gray-800
+            text-gray-700 dark:text-gray-200
+            border border-gray-300 dark:border-gray-600
+            hover:bg-gray-100 dark:hover:bg-gray-700 transition
+          "
+        >
+          + Generate
+        </button>
 
         <button
           onClick={handleCreate}
           className="
-            bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium
-            border border-green-500 hover:bg-green-200 transition
+            px-4 py-2 rounded-full text-sm font-medium
+            bg-white dark:bg-gray-800
+            text-gray-700 dark:text-gray-200
+            border border-gray-300 dark:border-gray-600
+            hover:bg-gray-100 dark:hover:bg-gray-700 transition
           "
         >
-          + Create Recipe
+          + Create
         </button>
 
         {/* THEME TOGGLE */}
