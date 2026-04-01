@@ -6,6 +6,8 @@ BiteRite is a **full-stack web application** that delivers **AI-powered personal
 It also features a **community forum** where users can share ideas, recipes, and interact with others.  
 
 ---
+<img width="1889" height="897" alt="image" src="https://github.com/user-attachments/assets/ab1d85dc-a5bc-4964-90a0-0af8a5acdc57" />
+
 
 ## ✨ Features  
 
