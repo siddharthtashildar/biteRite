@@ -1,8 +1,14 @@
 {
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+     "test": "vitest"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "vitest": "^4.1.2"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3"
   }
 }
