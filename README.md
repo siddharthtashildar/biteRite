@@ -79,3 +79,39 @@ npm install
 
 # 🚀 Start development server
 npm run dev
+```
+
+---
+
+## 🧪 Testing
+
+BiteRite includes comprehensive test coverage with **Black Box Testing** and **White Box Testing**.
+
+### Running Tests
+
+```bash
+# Backend Tests
+cd backend
+npm test                    # Run all tests
+npm run test:watch        # Watch mode
+npm run test:coverage     # Coverage report
+
+# Frontend Tests
+cd frontend
+npm test                    # Run all tests
+npm run test:watch        # Watch mode
+npm run test:ui           # UI mode
+npm run test:coverage     # Coverage report
+```
+
+### Test Coverage
+
+- ✅ **API Endpoint Testing** (Black Box)
+- ✅ **Authentication Logic** (White Box)
+- ✅ **Recipe Management** (White Box)
+- ✅ **AI Service Integration** (White Box)
+- ✅ **Component Testing** (React)
+- ✅ **Page Integration** (User Workflows)
+- ✅ **End-to-End Scenarios** (Critical User Paths)
+
+**See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for detailed information.**

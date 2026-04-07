@@ -14,6 +14,16 @@ function YourRecipes({ initialTab = "All Recipes" }) {
   const [yourRecipes, setYourRecipes] = useState([]);
   const [activeTab, setActiveTab] = useState(initialTab);
 
+    const handleCreate = () => {
+    if (typeof onCreate === "function") {
+      onCreate();
+    } else {
+      navigate("/?create=true");
+    }
+  }
+
+   const path = location.pathname.toLowerCase();
+
   useEffect(() => {
     if (!user) return;
 
@@ -113,7 +123,7 @@ function YourRecipes({ initialTab = "All Recipes" }) {
               </div>
 
               <button
-                onClick={() => navigate("/")}
+                onClick={handleCreate}
                 className="
                   flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium 
                   border border-green-500 hover:bg-green-200 transition
